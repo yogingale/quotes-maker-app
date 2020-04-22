@@ -1,0 +1,1 @@
+this directory will contains static files from pro themes that I do not have license to distribute

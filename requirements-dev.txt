@@ -1,0 +1,5 @@
+-r requirements.txt
+black==19.10b0
+isort==4.3.21
+pytest==3.6.0
+python-dotenv==0.8.2

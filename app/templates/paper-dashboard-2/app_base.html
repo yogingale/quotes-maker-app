@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block body_content %}
+    <div class="wrapper ">
+        <div class="sidebar" data-color="white" data-active-color="danger">
+            <!--
+              Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red | yellow"
+          -->
+            <div class="logo">
+                <a href="http://www.creative-tim.com" class="simple-text logo-mini">
+                    <div class="logo-image-small">
+                        <img src="{{ url_for('static', filename='/assets/img/logo-small.png') }}">
+                    </div>
+                </a>
+                <a href="http://www.creative-tim.com" class="simple-text logo-normal">
+                    Creative Tim
+                    <!-- <div class="logo-image-big">
+                      <img src="/assets/img/logo-big.png">
+                    </div> -->
+                </a>
+            </div>
+            <div class="sidebar-wrapper">
+                <ul class="nav">
+                    <li class="{{ is_active_link( [url_for('main.index'), '/', '/index']) }}">
+                        <a href="{{ url_for('main.index') }}">
+                            <i class="nc-icon nc-bank"></i>
+                            <p>Dashboard</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('static', filename='./icons.html') }}">
+                            <i class="nc-icon nc-diamond"></i>
+                            <p>Icons</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('static', filename='./map.html') }}">
+                            <i class="nc-icon nc-pin-3"></i>
+                            <p>Maps</p>
+                        </a>
+                    </li>
+                    <li class="{{ is_active_link(['notifications']) }}">
+                        <a href="{{ url_for('static', filename='./notifications.html') }}">
+                            <i class="nc-icon nc-bell-55"></i>
+                            <p>Notifications</p>
+                        </a>
+                    </li>
+                    <li class="{{ is_active_link( [url_for('user.user_profile')] ) }}">
+                        <a href="{{ url_for('user.user_profile') }}">
+                            <i class="nc-icon nc-single-02"></i>
+                            <p>User Profile</p>
+                        </a>
+                    </li>
+                    <li class="{{ is_active_link( [url_for('tables.tables')] ) }}">
+                        <a href="{{ url_for('tables.tables') }}">
+                            <i class="nc-icon nc-tile-56"></i>
+                            <p>Table List</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('static', filename='./typography.html') }}">
+                            <i class="nc-icon nc-caps-small"></i>
+                            <p>Typography</p>
+                        </a>
+                    </li>
+                    <li class="active-pro">
+                        <a href="{{ url_for('static', filename='./upgrade.html') }}">
+                            <i class="nc-icon nc-spaceship"></i>
+                            <p>Upgrade to PRO</p>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        {% block main_content %}
+        {% endblock %}
+    </div>
+{% endblock %}
+
+{% block script_content %}
+    {{ super() }}
+    <script src="{{ url_for('static', filename='/assets/js/vue.min.js') }}" type="text/javascript"></script>
+    <script src="{{ url_for('static', filename='/assets/js/axios.min.js') }}" type="text/javascript"></script>
+
+{% endblock %}
+

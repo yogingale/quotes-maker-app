@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+
+{% block app_content %}
+    <div class="tim-title">
+        <h3>404</h3>
+    </div>
+
+    <div id="notifications">
+    <div class="alert alert-danger">
+         <div class="container">
+             <b>An unexpected error has occurred</b> The administrator has been notified. Sorry for the inconvenience!
+        </div>
+    <p><a href="{{ url_for('main.index') }}">{{ 'Back' }}</a></p>
+    </div>
+    <div class="clearfix"></div>
+</div><!--  end notifications -->
+
+{% endblock %}
+
+

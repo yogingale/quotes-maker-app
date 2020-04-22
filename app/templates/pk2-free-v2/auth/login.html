@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block app_content %}
+    <div class="main">
+        <div class="container tim-container">
+
+            <div class="tim-title">
+                <h2>Flask Starter Login Page</h2>
+                <h3>{{ server_message }}</h3>
+
+            </div>
+
+            <form action="" method="post">
+                {{ form.hidden_tag() }}
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <p>
+                                {{ form.username.label }}<br>
+                                {{ form.username(size=32, class='form-control', placeholder='Username') }}<br>
+                                {% for error in form.username.errors %}
+                                    <span style="color: red;">[{{ error }}]</span>
+                                {% endfor %}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <p>
+                                {{ form.password.label }}<br>
+                                {{ form.password(size=32, class='form-control', placeholder='Password') }}<br>
+                                {% for error in form.password.errors %}
+                                    <span style="color: red;">[{{ error }}]</span>
+                                {% endfor %}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <p>
+                                <br>
+                                {{ form.remember_me() }} {{ form.remember_me.label }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <p>{{ form.submit(class="btn btn-block btn-lg btn-info btn-simple") }}</p>
+                </div>
+            </form>
+        </div>
+        <!-- end container -->
+        <div class="space-30"></div>
+    </div>
+
+{% endblock %}
