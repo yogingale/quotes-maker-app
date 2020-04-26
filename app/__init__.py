@@ -3,10 +3,10 @@ import os
 from logging.handlers import RotatingFileHandler
 
 from flask import Flask
+from flask_login import LoginManager
 
 from app.context_processors import is_active_link
 from app.flask_csrf_test_client import FlaskCSRFClient
-from flask_login import LoginManager
 
 login_manager = LoginManager()
 

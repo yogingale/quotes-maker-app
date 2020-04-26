@@ -7,7 +7,6 @@
 # First some imports. I'm assuming you're using Flask-WTF for CSRF protection.
 import flask
 from flask.testing import FlaskClient as BaseFlaskClient
-
 from flask_wtf.csrf import generate_csrf
 
 

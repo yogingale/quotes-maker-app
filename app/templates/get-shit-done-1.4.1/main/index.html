@@ -5,17 +5,30 @@
     <div class="main">
         <div class="container tim-container" style="max-width:800px; padding-top:100px">
             <h1 class="text-center">Caption Maker <br>
-                <small class="subtitle">Jump start a simple Flask Login Applications</small>
+                {% if caption %}
+                <small class="subtitle">{{caption}}</small>
+                {%  endif %}
             </h1>
-            <p>Select mood for the quote.</p>
-            love<div id="slider-default-love" class="slider-info"></div>
-            comedy<div id="slider-default-comedy" class="slider-info"></div>
-            motivational<div id="slider-default-motivational" class="slider-info"></div>
+
             <!--     end extras -->
         </div>
         <div class="container tim-container" style="max-width:800px; padding-top:100px">
             <p>Upload a picture</p>
-            <a href="{{ url_for('page2.index') }}" class="btn btn-block btn-lg btn-info btn-round">Upload</a>
+            <form action = "{{ url_for('main.upload') }}" method = "POST" enctype = "multipart/form-data">
+                <input type = "file" name = "photo" class="btn btn-info btn-sm"/>
+                <p>Select mood for the quote.</p>
+                    <label for="slider-default-love">Love:</label>
+                    <input type="range" id="slider-default-love" name="love" min="0" max="50" value="10">
+                    <label for="comedy">Comedy:</label>
+                    <input type="range" id="comedy" name="comedy" min="0" max="50" class="slider-info" value="5">
+                    <label for="motivational">Motivational:</label>
+                    <input type="range" id="motivational" name="motivational" min="0" max="50" class="slider-info" value="8">
+
+<!--                comedy<div id="slider-default-comedy" class="slider-info"></div>-->
+<!--                motivational<div id="slider-default-motivational" class="slider-info"></div>-->
+
+                <input type = "submit" class="btn btn-block btn-lg btn-info btn-round"/>
+            </form>
         </div>
         {% if current_user.has_role('ADMIN') %}
             <div class="container tim-container" style="max-width:800px; padding-top:100px">

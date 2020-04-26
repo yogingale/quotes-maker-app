@@ -4,7 +4,8 @@ from config import Config
 app = create_app(config_class=Config)
 
 # TODO : Add app.run based on environment.
-
+# TODO : Remove extra packages from requirements
+# TODO : Add correct default moods
 
 if __name__ == "__main__":
     app.jinja_env.auto_reload = True
