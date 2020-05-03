@@ -3,9 +3,14 @@ from config import Config
 
 app = create_app(config_class=Config)
 
+# TODO : host site
+# TODO : Add a button to disable moods
+# TODO : Make upload form beautiful
+# TODO : Fix css of moods
 # TODO : Add app.run based on environment.
 # TODO : Remove extra packages from requirements
-# TODO : Add correct default moods
+# TODO : Fix domain name
+# TODO : purchase domain name
 
 if __name__ == "__main__":
     app.jinja_env.auto_reload = True

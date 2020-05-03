@@ -1,13 +1,26 @@
 from app.main import main_bp
 from flask import current_app, request, redirect, render_template, url_for
 from flask_login import current_user, login_required
-from boto3.dynamodb.conditions import Key, Attr
+import pymongo
+import urllib
 
 import base64
 import random
+import re
 import boto3
 
-DEFAULT_MOODS = ["love", "death", "life"]
+DEFAULT_MOODS = [
+    "love",
+    "funny",
+    "happy",
+    "crazy",
+    "inspiration",
+    "weird",
+    "random",
+    "sad",
+    "life",
+    "art",
+]
 
 
 @main_bp.before_app_request
@@ -15,55 +28,86 @@ def before_request():
     current_app.logger.debug("in before app request ")
 
 
-def get_caption_from_response(response):
-    return response["Items"][0]["caption"]
+def get_captions_from_response(response):
+    response = list(response)
+    if len(response) >= 3:
+        number_of_samples = 3
+    else:
+        number_of_samples = len(response)
+    random_samples = random.sample(response, number_of_samples)
+    captions = []
+    for sample in random_samples:
+        captions.append({sample["author"]: sample["caption"]})
+    return captions
 
 
 def get_caption(
-    main_mood: str,
-    main_object: str = None,
-    sub_mood: str = None,
-    sub_object: str = None,
+    general_mood: str = re.compile("(.*?)"),
+    moods: list = [re.compile("(.*?)")],
+    objects: list = [re.compile("(.*?)")],
 ):
-    dynamodb = boto3.resource(
-        "dynamodb", region_name="us-east-2", endpoint_url="http://localhost:8000"
+    client = pymongo.MongoClient("localhost", 27017)
+    password = urllib.parse.quote_plus("Dhoni@12345")
+    client = pymongo.MongoClient(
+        f"mongodb+srv://caption-maker:{password}@cluster0-9y16x.mongodb.net/test?retryWrites=true&w=majority"
     )
-    table = dynamodb.Table("caption-maker")
 
-    if main_object:
-        resp = table.query(
-            KeyConditionExpression=Key("main_mood").eq(main_mood)
-            & Key("main_object").eq(main_object),
-            FilterExpression=(
-                Attr("sub_moods").contains(sub_mood)
-                | Attr("sub_objects").contains(sub_object)
-                | Attr("unknown").not_exists()
-            ),
+    db = client.caption_maker
+    captions = db.captions
+
+    if not general_mood:
+        if not moods:
+            moods = [re.compile("(.*?)")]
+        if not objects:
+            objects = [re.compile("(.*?)")]
+        resp = captions.find({"moods": {"$in": moods}, "objects": {"$in": objects},})
+        try:
+            return get_captions_from_response(resp)
+        except ValueError:
+            general_mood = random.choice(DEFAULT_MOODS)
+            return get_caption(general_mood, objects, moods)
+
+    if moods and objects:
+        resp = captions.find(
+            {
+                "general_mood": general_mood,
+                "moods": {"$in": moods},
+                "objects": {"$in": objects},
+            }
         )
         try:
-            return get_caption_from_response(resp)
-        except IndexError:
-            return get_caption(main_mood, sub_mood=sub_mood, sub_object=sub_object)
+            return get_captions_from_response(resp)
+        except ValueError:
+            return get_caption(general_mood, objects)
 
-    resp = table.query(
-        KeyConditionExpression=Key("main_mood").eq(main_mood),
-        FilterExpression=(
-            Attr("sub_moods").contains(sub_mood)
-            | Attr("sub_objects").contains(sub_object)
-            | Attr("unknown").not_exists()
-        ),
-    )
-    try:
-        return get_caption_from_response(resp)
-    except IndexError:
-        main_mood = random.choice(DEFAULT_MOODS)
-        print(main_mood)
-        return get_caption(main_mood)
+    if moods and not objects:
+        resp = captions.find({"general_mood": general_mood, "moods": {"$in": moods},})
+        try:
+            return get_captions_from_response(resp)
+        except ValueError:
+            return get_caption(general_mood)
+
+    if not moods and objects:
+        resp = captions.find(
+            {"general_mood": general_mood, "objects": {"$in": objects},}
+        )
+        try:
+            return get_captions_from_response(resp)
+        except ValueError:
+            return get_caption(general_mood)
+
+    if not moods and not objects:
+        resp = captions.find({"general_mood": general_mood})
+        try:
+            return get_captions_from_response(resp)
+        except ValueError:
+            general_mood = random.choice(DEFAULT_MOODS)
+            return get_caption(general_mood)
 
 
 def get_objects(encoded_image):
     client = boto3.client("rekognition")
-    # return client.detect_labels(Image={'Bytes': encoded_image})
+    return client.detect_labels(Image={"Bytes": encoded_image})
     return {
         "LabelModelVersion": "2.0",
         "Labels": [
@@ -113,23 +157,31 @@ def get_objects(encoded_image):
 
 @main_bp.route("/upload", methods=["POST"])
 def upload():
-    print(request.form.to_dict())
+    # print(request.form.to_dict())
 
     if request.method == "POST":
         moods = request.form.to_dict()
-        sorted_moods = sorted(moods.keys(), key=moods.get)
-        main_mood = sorted_moods[0]
-        sub_mood = sorted_moods[1]
+        sorted_moods = [
+            k
+            for k, v in sorted(
+                moods.items(), key=lambda item: int(item[1]), reverse=True
+            )
+            if int(v) > 0
+        ]
+        try:
+            general_mood = sorted_moods[0]
+            moods = sorted_moods[1:6]
+        except IndexError:
+            general_mood = moods = None
 
         image = request.files["photo"]
         base64_image = base64.b64encode(image.read())
         base_64_binary = base64.decodebytes(base64_image)
         objects = get_objects(base_64_binary)
-        main_object = objects["Labels"][0]["Name"]
-        sub_object = objects["Labels"][1]["Name"]
-        # print(main_mood)
-        caption = get_caption(main_mood, main_object, sub_mood, sub_object)
-        return render_template("main/index.html", caption=caption,)
+        sorted_objects = [label["Name"].lower() for label in objects["Labels"]]
+        print(general_mood, moods, sorted_objects)
+        captions = get_caption(general_mood, moods, sorted_objects)
+        return render_template("main/index.html", captions=captions)
 
 
 @main_bp.route("/", methods=["GET"])

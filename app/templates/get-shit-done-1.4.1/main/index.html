@@ -4,12 +4,19 @@
 {% block app_content %}
     <div class="main">
         <div class="container tim-container" style="max-width:800px; padding-top:100px">
-            <h1 class="text-center">Caption Maker <br>
-                {% if caption %}
-                <small class="subtitle">{{caption}}</small>
+            <h1 class="text-center">Get AI based Captions for your picture</h1>
+            <h3 class="text-center"> Upload a Picture and select the Mood for your Caption.</h3>
+
+            <h1 class="text-center">
+                {% if captions %}
+                    {% for caption in captions %}
+                       {% for author, caption in caption.items() %}
+                          <small class="quote">{{caption}}<br></small>
+                          <small class="subtitle">- {{author}}<br><br></small>
+                       {% endfor %}
+                    {% endfor %}
                 {%  endif %}
             </h1>
-
             <!--     end extras -->
         </div>
         <div class="container tim-container" style="max-width:800px; padding-top:100px">
@@ -17,13 +24,24 @@
             <form action = "{{ url_for('main.upload') }}" method = "POST" enctype = "multipart/form-data">
                 <input type = "file" name = "photo" class="btn btn-info btn-sm"/>
                 <p>Select mood for the quote.</p>
-                    <label for="slider-default-love">Love:</label>
-                    <input type="range" id="slider-default-love" name="love" min="0" max="50" value="10">
-                    <label for="comedy">Comedy:</label>
-                    <input type="range" id="comedy" name="comedy" min="0" max="50" class="slider-info" value="5">
-                    <label for="motivational">Motivational:</label>
-                    <input type="range" id="motivational" name="motivational" min="0" max="50" class="slider-info" value="8">
-
+                    <label for="love">Love:</label>
+                    <input type="range" id="love" name="love" min="0" max="50" value="0">
+                    <label for="funny">Funny:</label>
+                    <input type="range" id="funny" name="funny" min="0" max="50" class="slider-info" value="0">
+                    <label for="happy">Happy:</label>
+                    <input type="range" id="happy" name="happy" min="0" max="50" class="slider-info" value="0">
+                    <label for="inspiration">Inspirational:</label>
+                    <input type="range" id="inspiration" name="inspiration" min="0" max="50" class="slider-info" value="0">
+                    <label for="weird">Crazy:</label>
+                    <input type="range" id="weird" name="weird" min="0" max="50" class="slider-info" value="0">
+                    <label for="random">Random:</label>
+                    <input type="range" id="random" name="random" min="0" max="50" class="slider-info" value="0">
+                    <label for="sad">Sad:</label>
+                    <input type="range" id="sad" name="sad" min="0" max="50" class="slider-info" value="0">
+                    <label for="life">Life:</label>
+                    <input type="range" id="life" name="life" min="0" max="50" class="slider-info" value="0">
+                    <label for="art">Art:</label>
+                    <input type="range" id="art" name="art" min="0" max="50" class="slider-info" value="0">
 <!--                comedy<div id="slider-default-comedy" class="slider-info"></div>-->
 <!--                motivational<div id="slider-default-motivational" class="slider-info"></div>-->
 
