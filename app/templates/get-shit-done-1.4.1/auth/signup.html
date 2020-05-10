@@ -5,7 +5,7 @@
         <div class="container tim-container">
 
             <div class="tim-title">
-                <h2>Flask Starter Login Page</h2>
+                <h2>Flask Starter Signup Page</h2>
                 <h3>{{ server_message }}</h3>
 
             </div>
@@ -17,8 +17,20 @@
                         <div class="form-group">
                             <p>
                                 {{ form.email.label }}<br>
-                                {{ form.email(size=32, class='form-control', placeholder='Email') }}<br>
+                                {{ form.email(size=32, class='form-control', placeholder='Email address') }}<br>
                                 {% for error in form.email.errors %}
+                                    <span style="color: red;">[{{ error }}]</span>
+                                {% endfor %}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <p>
+                                {{ form.username.label }}<br>
+                                {{ form.username(size=32, class='form-control', placeholder='Username') }}<br>
+                                {% for error in form.username.errors %}
                                     <span style="color: red;">[{{ error }}]</span>
                                 {% endfor %}
                             </p>
@@ -33,14 +45,6 @@
                                 {% for error in form.password.errors %}
                                     <span style="color: red;">[{{ error }}]</span>
                                 {% endfor %}
-                            </p>
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <p>
-                                <br>
-                                {{ form.remember_me() }} {{ form.remember_me.label }}
                             </p>
                         </div>
                     </div>

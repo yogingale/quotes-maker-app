@@ -1,5 +1,5 @@
 from app.main import main_bp
-from flask import current_app, request, redirect, render_template, url_for
+from flask import current_app, request, render_template, session, redirect, url_for
 from flask_login import current_user, login_required
 import pymongo
 import urllib
@@ -158,8 +158,12 @@ def get_objects(encoded_image):
 @main_bp.route("/upload", methods=["POST"])
 def upload():
     # print(request.form.to_dict())
-
     if request.method == "POST":
+        count = session.setdefault("caption_form_usage_count", 0)
+        session['caption_form_usage_count'] = count + 1
+        if session['caption_form_usage_count'] >= 5:
+            return render_template("main/index.html",homepage_message="You have crossed the usage limit. Please signup to get more captions.")
+
         moods = request.form.to_dict()
         sorted_moods = [
             k
@@ -184,7 +188,55 @@ def upload():
         return render_template("main/index.html", captions=captions)
 
 
+@main_bp.route("/upload-login", methods=["POST"])
+def upload_login():
+    # print(request.form.to_dict())
+    if request.method == "POST":
+        count = session.setdefault("caption_form_usage_count", 0)
+        session['caption_form_usage_count'] = count + 1
+        if session['caption_form_usage_count'] >= 15:
+            return render_template("main/index.html",homepage_message="You have crossed the usage limit. Please come back tomorrow.")
+
+        moods = request.form.to_dict()
+        sorted_moods = [
+            k
+            for k, v in sorted(
+                moods.items(), key=lambda item: int(item[1]), reverse=True
+            )
+            if int(v) > 0
+        ]
+        try:
+            general_mood = sorted_moods[0]
+            moods = sorted_moods[1:6]
+        except IndexError:
+            general_mood = moods = None
+
+        image = request.files["photo"]
+        base64_image = base64.b64encode(image.read())
+        base_64_binary = base64.decodebytes(base64_image)
+        objects = get_objects(base_64_binary)
+        sorted_objects = [label["Name"].lower() for label in objects["Labels"]]
+        print(general_mood, moods, sorted_objects)
+        captions = get_caption(general_mood, moods, sorted_objects)
+        return render_template("main/index.html", captions=captions)
+
 @main_bp.route("/", methods=["GET"])
+@main_bp.route("/index1", methods=["GET"])
+def index1():
+    if current_user.is_authenticated:
+        return redirect(url_for("main.index"))
+
+    session.setdefault("caption_form_usage_count", 0)
+    if session['caption_form_usage_count'] >= 5:
+        return render_template("main/index.html",
+                               homepage_message="You have crossed the usage limit. Please signup to get more captions.")
+    return render_template(
+        "main/index.html",
+        server_message="Flask, Jinja and Creative Tim.. working together!",
+        login=False
+    )
+
+
 @main_bp.route("/index", methods=["GET"])
 @login_required
 def index():
@@ -192,4 +244,5 @@ def index():
     return render_template(
         "main/index.html",
         server_message="Flask, Jinja and Creative Tim.. working together!",
+        login=True
     )

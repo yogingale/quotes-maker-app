@@ -21,39 +21,38 @@
         </div>
         <div class="container tim-container" style="max-width:800px; padding-top:100px">
             <p>Upload a picture</p>
-            <form action = "{{ url_for('main.upload') }}" method = "POST" enctype = "multipart/form-data">
-                <input type = "file" name = "photo" class="btn btn-info btn-sm"/>
-                <p>Select mood for the quote.</p>
-                    <label for="love">Love:</label>
-                    <input type="range" id="love" name="love" min="0" max="50" value="0">
-                    <label for="funny">Funny:</label>
-                    <input type="range" id="funny" name="funny" min="0" max="50" class="slider-info" value="0">
-                    <label for="happy">Happy:</label>
-                    <input type="range" id="happy" name="happy" min="0" max="50" class="slider-info" value="0">
-                    <label for="inspiration">Inspirational:</label>
-                    <input type="range" id="inspiration" name="inspiration" min="0" max="50" class="slider-info" value="0">
-                    <label for="weird">Crazy:</label>
-                    <input type="range" id="weird" name="weird" min="0" max="50" class="slider-info" value="0">
-                    <label for="random">Random:</label>
-                    <input type="range" id="random" name="random" min="0" max="50" class="slider-info" value="0">
-                    <label for="sad">Sad:</label>
-                    <input type="range" id="sad" name="sad" min="0" max="50" class="slider-info" value="0">
-                    <label for="life">Life:</label>
-                    <input type="range" id="life" name="life" min="0" max="50" class="slider-info" value="0">
-                    <label for="art">Art:</label>
-                    <input type="range" id="art" name="art" min="0" max="50" class="slider-info" value="0">
-<!--                comedy<div id="slider-default-comedy" class="slider-info"></div>-->
-<!--                motivational<div id="slider-default-motivational" class="slider-info"></div>-->
+            {% if login == True %}
+                <form action = "{{ url_for('main.upload_login') }}" method = "POST" enctype = "multipart/form-data">
+            {% else %}
+               <form action = "{{ url_for('main.upload') }}" method = "POST" enctype = "multipart/form-data">
+            {% endif %}
+                    <input type = "file" name = "photo" class="btn btn-info btn-sm"/>
+                    <p>Select mood for the quote.</p>
+                        <label for="love">Love:</label>
+                        <input type="range" id="love" name="love" min="0" max="50" value="0">
+                        <label for="funny">Funny:</label>
+                        <input type="range" id="funny" name="funny" min="0" max="50" class="slider-info" value="0">
+                        <label for="happy">Happy:</label>
+                        <input type="range" id="happy" name="happy" min="0" max="50" class="slider-info" value="0">
+                        <label for="inspiration">Inspirational:</label>
+                        <input type="range" id="inspiration" name="inspiration" min="0" max="50" class="slider-info" value="0">
+                        <label for="weird">Crazy:</label>
+                        <input type="range" id="weird" name="weird" min="0" max="50" class="slider-info" value="0">
+                        <label for="random">Random:</label>
+                        <input type="range" id="random" name="random" min="0" max="50" class="slider-info" value="0">
+                        <label for="sad">Sad:</label>
+                        <input type="range" id="sad" name="sad" min="0" max="50" class="slider-info" value="0">
+                        <label for="life">Life:</label>
+                        <input type="range" id="life" name="life" min="0" max="50" class="slider-info" value="0">
+                        <label for="art">Art:</label>
+                        <input type="range" id="art" name="art" min="0" max="50" class="slider-info" value="0">
+    <!--                comedy<div id="slider-default-comedy" class="slider-info"></div>-->
+    <!--                motivational<div id="slider-default-motivational" class="slider-info"></div>-->
 
-                <input type = "submit" class="btn btn-block btn-lg btn-info btn-round"/>
-            </form>
+                    <input type = "submit" class="btn btn-block btn-lg btn-info btn-round"/>
+                </form>
         </div>
-        {% if current_user.has_role('ADMIN') %}
-            <div class="container tim-container" style="max-width:800px; padding-top:100px">
-                <p>You will only see this if you are an admin</p>
-                <a href="{{ url_for('admin.index') }}" class="btn btn-block btn-lg btn-info btn-round">Protected Admin Page</a>
-            </div>
-        {%  endif %}
+
         <div class="space"></div>
 
         <!-- end container -->
