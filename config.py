@@ -1,4 +1,5 @@
 import os
+import urllib
 
 from dotenv import load_dotenv
 
@@ -60,14 +61,12 @@ users = [
 class Config(object):
     # needed by flask wtf for CSRC
     SECRET_KEY = os.environ.get("SECRET_KEY") or "YOU WILL NEVER GUESS"
+    CSRF_ENABLED = True
     CONTENT_DIR = "get-shit-done-1.4.1"
-    # CONTENT_DIR = 'pk2-free-v2'
-    # CONTENT_DIR = 'paper-dashboard-2'
-    # CONTENT_DIR = 'private/paper-dashboard-2-pro'
     STATIC_PATH = f"static/{CONTENT_DIR}"
     TEMPLATES_DIR = f"templates/{CONTENT_DIR}"
-    # url for the spotify top 'n' jam songs
-    spotify_top_30_url = "https://open.spotify.com/user/thesoundsofspotify/playlist/1z1LfuAoQQDRKLOyVQvaRa"
+    MONGO_DB_PASSWORD = urllib.parse.quote_plus(os.environ.get("MONGO_DB_PASSWORD"))
+    MONGO_DB_URI = f"mongodb+srv://caption-maker:{MONGO_DB_PASSWORD}@cluster0-9y16x.mongodb.net/test?retryWrites=true&w=majority"
 
     @staticmethod
     def load_users():

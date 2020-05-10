@@ -1,18 +1,22 @@
+import os
+
 from app import create_app
 from config import Config
 
 app = create_app(config_class=Config)
+app.config.from_object(os.environ.get("APP_SETTINGS"))
 
-# TODO : purchase domain
-# TODO : host site
+# TODO : Add a button to disable moods
+# TODO : Fix css of moods
+# TODO : Add login/signup buttuon
 # TODO : Add adds
+# TODO : Add down arrow on banner when submit for action
+# TODO : resturcture python code
 # TODO : Remove extra packages from requirements
 # TODO : Remove unnecessary code
-# TODO : DB connection password should go out from code
-# TODO : Add a button to disable moods
-# TODO : Make upload form beautiful
-# TODO : Fix css of moods
 # TODO : Add app.run based on environment.
+# TODO : purchase domain
+# TODO : host site
 
 if __name__ == "__main__":
     app.jinja_env.auto_reload = True

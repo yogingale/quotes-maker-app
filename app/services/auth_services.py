@@ -1,12 +1,8 @@
 from app import login_manager
 from app.models import User
-from flask import current_app
-from config import Config
-import pymongo
-import urllib
-from functools import wraps
 from flask_login import current_user
 from werkzeug.exceptions import Unauthorized
+from app.services.db_services import init_db
 
 
 @login_manager.user_loader
@@ -16,16 +12,11 @@ def load_user(id):
     :param id: username
     :return: return User object or None
     """
-    print(id)
+
     # current_app.logger.info(f'load_user: {id}')
-    client = pymongo.MongoClient("localhost", 27017)
-    password = urllib.parse.quote_plus("Dhoni@12345")
-    client = pymongo.MongoClient(
-        f"mongodb+srv://caption-maker:{password}@cluster0-9y16x.mongodb.net/test?retryWrites=true&w=majority"
-    )
+    client = init_db()
     db = client.caption_maker
     users = db.users
-
     response = users.find({"email": id})
     for user in response:
         if user["email"] == id:
@@ -43,11 +34,7 @@ def create_user(data):
     :return: return User status
     """
     # current_app.logger.info(f'load_user: {id}')
-    client = pymongo.MongoClient("localhost", 27017)
-    password = urllib.parse.quote_plus("Dhoni@12345")
-    client = pymongo.MongoClient(
-        f"mongodb+srv://caption-maker:{password}@cluster0-9y16x.mongodb.net/test?retryWrites=true&w=majority"
-    )
+    client = init_db()
     db = client.caption_maker
     users = db.users
     data = {
@@ -71,16 +58,3 @@ def get_current_user_roles():
 
 def error_response():
     raise Unauthorized()
-
-
-def requires_roles(*roles):
-    def wrapper(f):
-        @wraps(f)
-        def wrapped(*args, **kwargs):
-            if not set(get_current_user_roles()).intersection(set(roles[0])):
-                return error_response()
-            return f(*args, **kwargs)
-
-        return wrapped
-
-    return wrapper

@@ -1,8 +1,7 @@
 from app.main import main_bp
 from flask import current_app, request, render_template, session, redirect, url_for
 from flask_login import current_user, login_required
-import pymongo
-import urllib
+from app.services.db_services import init_db
 
 import base64
 import random
@@ -46,12 +45,7 @@ def get_caption(
     moods: list = [re.compile("(.*?)")],
     objects: list = [re.compile("(.*?)")],
 ):
-    client = pymongo.MongoClient("localhost", 27017)
-    password = urllib.parse.quote_plus("Dhoni@12345")
-    client = pymongo.MongoClient(
-        f"mongodb+srv://caption-maker:{password}@cluster0-9y16x.mongodb.net/test?retryWrites=true&w=majority"
-    )
-
+    client = init_db()
     db = client.caption_maker
     captions = db.captions
 
@@ -160,9 +154,12 @@ def upload():
     # print(request.form.to_dict())
     if request.method == "POST":
         count = session.setdefault("caption_form_usage_count", 0)
-        session['caption_form_usage_count'] = count + 1
-        if session['caption_form_usage_count'] >= 5:
-            return render_template("main/index.html",homepage_message="You have crossed the usage limit. Please signup to get more captions.")
+        session["caption_form_usage_count"] = count + 1
+        if session["caption_form_usage_count"] >= 5:
+            return render_template(
+                "main/index.html",
+                homepage_message="You have crossed the usage limit. Please signup to get more captions.",
+            )
 
         moods = request.form.to_dict()
         sorted_moods = [
@@ -193,9 +190,12 @@ def upload_login():
     # print(request.form.to_dict())
     if request.method == "POST":
         count = session.setdefault("caption_form_usage_count", 0)
-        session['caption_form_usage_count'] = count + 1
-        if session['caption_form_usage_count'] >= 15:
-            return render_template("main/index.html",homepage_message="You have crossed the usage limit. Please come back tomorrow.")
+        session["caption_form_usage_count"] = count + 1
+        if session["caption_form_usage_count"] >= 15:
+            return render_template(
+                "main/index.html",
+                homepage_message="You have crossed the usage limit. Please come back tomorrow.",
+            )
 
         moods = request.form.to_dict()
         sorted_moods = [
@@ -220,6 +220,7 @@ def upload_login():
         captions = get_caption(general_mood, moods, sorted_objects)
         return render_template("main/index.html", captions=captions)
 
+
 @main_bp.route("/", methods=["GET"])
 @main_bp.route("/index1", methods=["GET"])
 def index1():
@@ -227,13 +228,15 @@ def index1():
         return redirect(url_for("main.index"))
 
     session.setdefault("caption_form_usage_count", 0)
-    if session['caption_form_usage_count'] >= 5:
-        return render_template("main/index.html",
-                               homepage_message="You have crossed the usage limit. Please signup to get more captions.")
+    if session["caption_form_usage_count"] >= 5:
+        return render_template(
+            "main/index.html",
+            homepage_message="You have crossed the usage limit. Please signup to get more captions.",
+        )
     return render_template(
         "main/index.html",
         server_message="Flask, Jinja and Creative Tim.. working together!",
-        login=False
+        login=False,
     )
 
 
@@ -244,5 +247,5 @@ def index():
     return render_template(
         "main/index.html",
         server_message="Flask, Jinja and Creative Tim.. working together!",
-        login=True
+        login=True,
     )
