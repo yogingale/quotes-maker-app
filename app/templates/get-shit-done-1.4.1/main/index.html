@@ -22,32 +22,34 @@
         <div class="container tim-container" style="max-width:800px; padding-top:100px">
             <p>Upload a picture</p>
             {% if login == True %}
-                <form action = "{{ url_for('main.upload_login') }}" method = "POST" enctype = "multipart/form-data">
+                <form name="myform" action = "{{ url_for('main.upload_login') }}" method = "POST" enctype = "multipart/form-data">
             {% else %}
-               <form action = "{{ url_for('main.upload') }}" method = "POST" enctype = "multipart/form-data">
+               <form name="myform" action = "{{ url_for('main.upload') }}" method = "POST" enctype = "multipart/form-data">
             {% endif %}
                     <input type = "file" name = "photo" class="btn btn-info btn-sm"/>
                     <p>Select mood for the quote.</p>
-                        <label for="love">Love:</label>
-                        <input type="range" id="love" name="love" min="0" max="50" value="0">
-                        <label for="funny">Funny:</label>
-                        <input type="range" id="funny" name="funny" min="0" max="50" class="slider-info" value="0">
-                        <label for="happy">Happy:</label>
-                        <input type="range" id="happy" name="happy" min="0" max="50" class="slider-info" value="0">
-                        <label for="inspiration">Inspirational:</label>
-                        <input type="range" id="inspiration" name="inspiration" min="0" max="50" class="slider-info" value="0">
-                        <label for="weird">Crazy:</label>
-                        <input type="range" id="weird" name="weird" min="0" max="50" class="slider-info" value="0">
-                        <label for="random">Random:</label>
-                        <input type="range" id="random" name="random" min="0" max="50" class="slider-info" value="0">
-                        <label for="sad">Sad:</label>
-                        <input type="range" id="sad" name="sad" min="0" max="50" class="slider-info" value="0">
-                        <label for="life">Life:</label>
-                        <input type="range" id="life" name="life" min="0" max="50" class="slider-info" value="0">
-                        <label for="art">Art:</label>
-                        <input type="range" id="art" name="art" min="0" max="50" class="slider-info" value="0">
-    <!--                comedy<div id="slider-default-comedy" class="slider-info"></div>-->
-    <!--                motivational<div id="slider-default-motivational" class="slider-info"></div>-->
+                   <b><h2 class="text-primary">
+                   <div class="slidecontainer">
+                       <small class="ct-red">Love:</small>
+                       <input type="range" min="1" name="love" max="100" value="2" class="mood-slider"><br>
+                       <small class="ct-azzure">Funny:</small>
+                       <input type="range" min="1" name="funny" max="100" value="2" class="mood-slider"><br>
+                       <small class="ct-orange">Happy:</small>
+                       <input type="range" min="1" name="happy" max="100" value="2" class="mood-slider"><br>
+                       <small class="ct-green">Inspirational:</small>
+                       <input type="range" min="1" name="inspirational" max="100" value="2" class="mood-slider"><br>
+                       <small class="ct-blue">Crazy:</small>
+                       <input type="range" min="1" name="crazy" max="100" value="2" class="mood-slider"><br>
+                       <small class="ct-orange">Random:</small>
+                       <input type="range" min="1" name="random" max="100" value="2" class="mood-slider"><br>
+                       <small class="ct-azzure">Sad:</small>
+                       <input type="range" min="1" name="sad" max="100" value="2" class="mood-slider"><br>
+                       <small class="ct-green">Life:</small>
+                       <input type="range" min="1" name="life" max="100" value="2" class="mood-slider"><br>
+                       <small class="ct-red">Art:</small>
+                       <input type="range" min="1" name="art" max="100" value="2" class="mood-slider"><br>
+                   </div>
+                   </h2></b>
 
                     <input type = "submit" class="btn btn-block btn-lg btn-info btn-round"/>
                 </form>
@@ -95,4 +97,7 @@
         </div>
     </div> <!-- end carousel -->
 
+<script>
+
+</script>
 {% endblock %}

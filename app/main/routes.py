@@ -182,6 +182,7 @@ def upload():
         sorted_objects = [label["Name"].lower() for label in objects["Labels"]]
         print(general_mood, moods, sorted_objects)
         captions = get_caption(general_mood, moods, sorted_objects)
+        print(captions)
         return render_template("main/index.html", captions=captions)
 
 
@@ -191,13 +192,14 @@ def upload_login():
     if request.method == "POST":
         count = session.setdefault("caption_form_usage_count", 0)
         session["caption_form_usage_count"] = count + 1
-        if session["caption_form_usage_count"] >= 15:
+        if session["caption_form_usage_count"] >= 150:
             return render_template(
                 "main/index.html",
                 homepage_message="You have crossed the usage limit. Please come back tomorrow.",
             )
 
         moods = request.form.to_dict()
+        print(moods)
         sorted_moods = [
             k
             for k, v in sorted(
@@ -224,14 +226,12 @@ def upload_login():
 @main_bp.route("/", methods=["GET"])
 @main_bp.route("/index1", methods=["GET"])
 def index1():
-    if current_user.is_authenticated:
-        return redirect(url_for("main.index"))
-
     session.setdefault("caption_form_usage_count", 0)
     if session["caption_form_usage_count"] >= 5:
         return render_template(
             "main/index.html",
             homepage_message="You have crossed the usage limit. Please signup to get more captions.",
+            login=False,
         )
     return render_template(
         "main/index.html",
