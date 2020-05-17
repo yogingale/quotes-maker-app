@@ -59,17 +59,20 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
               <ul class="nav navbar-nav navbar-right">
                   {% if login == True %}
-                      <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
+                      <li><a href="{{ url_for('auth.logout') }}" class="btn btn-round btn-default">Log Out</a></li>
+                  {% else %}
+                      <li><a href="{{ url_for('auth.login') }}" class="btn btn-round btn-default">Log In</a></li>
+                      <li><a href="{{ url_for('auth.signup') }}" class="btn btn-round btn-default">New User?</a></li>
                   {% endif %}
-{#                    <li><a href="{{ url_for('static', filename='components.html') }}">Components</a></li>#}
-{##}
-{#                    <li><a href="http://www.creative-tim.com/product/get-shit-done-kit" class="btn btn-round btn-default">Download</a></li>#}
+{#                    <li><a href="http://www.creative-tim.com/product/get-shit-done-kit" class="btn btn-round btn-default">Download</a></li> #}
+
+{##
                   {% if login == True %}
-                        <h4 class="presentation-subtitle text-center">{{current_user}}</h4>
+                        <li><h4 class="presentation-subtitle text-center">Hey {{current_user.username}}, you're Awesome!</h4></li>
                   {% else %}
                         <h4 class="presentation-subtitle text-center">Anonymous User</h4>
                   {% endif %}
-
+##}
                </ul>
 
             </div><!-- /.navbar-collapse -->
