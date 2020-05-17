@@ -185,7 +185,7 @@ input.ct-red + span + label + span.switch-right {
 .btn {
   border-width: 2px;
   background-color: transparent;
-  font-weight: 400;
+  font-weight: 600;
   opacity: 0.8;
   filter: alpha(opacity=80);
   padding: 8px 16px;

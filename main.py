@@ -16,6 +16,8 @@ app.config.from_object(os.environ.get("APP_SETTINGS"))
 # TODO : purchase domain
 # TODO : Add MONGO_DB_URI in env variable
 # TODO : Replace prints with logs
+# TODO : Check GDPR constraints
+# TODO : Add transperant nav bar from creative-tim
 
 if __name__ == "__main__":
     app.jinja_env.auto_reload = True

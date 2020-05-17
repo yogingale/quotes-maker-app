@@ -59,7 +59,7 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
               <ul class="nav navbar-nav navbar-right">
                   {% if login == True %}
-                      <li><a href="{{ url_for('auth.logout') }}" class="btn btn-round btn-default">Log Out</a></li>
+                      <li><a href="{{ url_for('auth.logout') }}" class="btn btn-round btn-default ">Log Out</a></li>
                   {% else %}
                       <li><a href="{{ url_for('auth.login') }}" class="btn btn-round btn-default">Log In</a></li>
                       <li><a href="{{ url_for('auth.signup') }}" class="btn btn-round btn-default">New User?</a></li>
@@ -87,8 +87,8 @@
             <div class="border no-right-border">A</div><div class="border">I</div>
 
         </div>
-        <div class="img-src" style="background-image: url( {{ url_for('static', filename='assets/img/cover_4.jpg', _external=True) }} )"></div>
-        <div class='img-src blur' style="background-image: url({{ url_for('static',filename='assets/img/cover_4_blur.jpg', _external=True) }})"></div>
+        <div class="img-src" style="background-image: url( {{ url_for('static', filename='assets/img/lake.jpg', _external=True) }} )"></div>
+        <div class='img-src blur' style="background-image: url({{ url_for('static',filename='assets/img/lake.jpg', _external=True) }})"></div>
     </div>
 
 </div>
