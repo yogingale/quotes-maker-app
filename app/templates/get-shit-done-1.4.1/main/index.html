@@ -26,7 +26,7 @@
             {% else %}
                <form name="myform" action = "{{ url_for('main.upload') }}" method = "POST" enctype = "multipart/form-data">
             {% endif %}
-                    <input type = "file" name = "photo" class="btn btn-info btn-sm"/>
+                    <input type = "file" name = "photo" class="btn btn-info btn-sm" required/>
                     <p>Select mood for the quote.</p>
                    <b><h2 class="text-primary">
                    <div class="slidecontainer">
@@ -36,8 +36,8 @@
                        <input type="range" min="0" name="funny" max="100" value="0" class="mood-slider"><br>
                        <small class="ct-orange">Happy:</small>
                        <input type="range" min="0" name="happy" max="100" value="0" class="mood-slider"><br>
-                       <small class="ct-green">Inspirational:</small>
-                       <input type="range" min="0" name="inspirational" max="100" value="0" class="mood-slider"><br>
+                       <small class="ct-green">Inspiration:</small>
+                       <input type="range" min="0" name="inspiration" max="100" value="0" class="mood-slider"><br>
                        <small class="ct-blue">Crazy:</small>
                        <input type="range" min="0" name="weird" max="100" value="0" class="mood-slider"><br>
                        <small class="ct-orange">Random:</small>
