@@ -110,7 +110,7 @@ def get_objects(encoded_image):
 
 @main_bp.route("/upload", methods=["POST"])
 def upload():
-    #print(request.form.to_dict())
+    # print(request.form.to_dict())
     if request.method == "POST":
         count = session.setdefault("caption_form_usage_count", 0)
         session["caption_form_usage_count"] = count + 1
@@ -188,6 +188,13 @@ def upload_login():
 @main_bp.route("/", methods=["GET"])
 @main_bp.route("/index1", methods=["GET"])
 def index1():
+    session.setdefault("caption_form_usage_count", 0)
+    if session["caption_form_usage_count"] >= 5:
+        return render_template(
+            "main/index.html",
+            homepage_message="You have crossed the usage limit. Please signup to get more captions.",
+            login=False,
+        )
     return render_template(
         "main/index.html",
         server_message="Flask, Jinja and Creative Tim.. working together!",
