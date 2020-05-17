@@ -8,7 +8,7 @@ class LoginForm(FlaskForm):
     email = StringField("Email", validators=[DataRequired()])
     password = PasswordField("Password", validators=[DataRequired()])
     remember_me = BooleanField("Remember Me")
-    submit = SubmitField("Sign In")
+    submit = SubmitField("Log In")
 
 
 class SignupForm(FlaskForm):
