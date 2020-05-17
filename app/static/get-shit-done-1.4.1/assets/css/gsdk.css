@@ -54,8 +54,8 @@ p {
 
 h1 small, h2 small, h3 small, h4 small, h5 small, h6 small, .h1 small, .h2 small, .h3 small, .h4 small, .h5 small, .h6 small, h1 .small, h2 .small, h3 .small, h4 .small, h5 .small, h6 .small, .h1 .small, .h2 .small, .h3 .small, .h4 .small, .h5 .small, .h6 .small {
   color: #9A9A9A;
-  font-weight: 350;
-  line-height: 3.5; }
+  font-weight: 300;
+  line-height: 1.5; }
 
 h1 small, h2 small, h3 small, h1 .small, h2 .small, h3 .small {
   font-size: 60%; }

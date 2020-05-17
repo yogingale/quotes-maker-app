@@ -67,7 +67,7 @@ class FlaskCSRFClient(BaseFlaskClient):
     def login(self, email, password):
         return self.post(
             "/login",
-            data={"email": email, "password": password, "csrf_token": self.csrf_token,},
+            data={"email": email, "password": password, "csrf_token": self.csrf_token},
             follow_redirects=True,
         )
 
@@ -94,5 +94,5 @@ if __name__ == "__main__":
     # And any time you need to pass a CSRF token, just use the `csrf_token`
     # property, like this:
     client.post(
-        "/user/1", data={"favorite_color": "blue", "csrf_token": client.csrf_token,}
+        "/user/1", data={"favorite_color": "blue", "csrf_token": client.csrf_token}
     )

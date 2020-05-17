@@ -6,16 +6,15 @@ from config import Config
 app = create_app(config_class=Config)
 app.config.from_object(os.environ.get("APP_SETTINGS"))
 
-# TODO : Fix captions response, maybe due to db connections
 # TODO : Add a button to disable moods
 # TODO : Add login/signup button
+# TODO : Add google signup
 # TODO : Add adds
 # TODO : Add down arrow on banner when submit for action
 # TODO : validate form uploads
 # TODO : Add homepage button/link
 # TODO : create carousal banner
 # TODO : restructure python code
-# TODO : Remove extra packages from requirements
 # TODO : Remove unnecessary code
 # TODO : Add app.run based on environment.
 # TODO : purchase domain

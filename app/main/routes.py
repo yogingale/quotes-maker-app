@@ -12,7 +12,6 @@ DEFAULT_MOODS = [
     "love",
     "funny",
     "happy",
-    "crazy",
     "inspiration",
     "weird",
     "random",
@@ -28,6 +27,7 @@ def before_request():
 
 
 def get_captions_from_response(response):
+    print(response)
     response = list(response)
     if len(response) >= 3:
         number_of_samples = 3
@@ -37,6 +37,10 @@ def get_captions_from_response(response):
     captions = []
     for sample in random_samples:
         captions.append({sample["author"]: sample["caption"]})
+
+    if not captions:
+        raise ValueError()
+
     return captions
 
 
@@ -151,11 +155,11 @@ def get_objects(encoded_image):
 
 @main_bp.route("/upload", methods=["POST"])
 def upload():
-    # print(request.form.to_dict())
+    print(request.form.to_dict())
     if request.method == "POST":
         count = session.setdefault("caption_form_usage_count", 0)
         session["caption_form_usage_count"] = count + 1
-        if session["caption_form_usage_count"] >= 5:
+        if session["caption_form_usage_count"] >= 50:
             return render_template(
                 "main/index.html",
                 homepage_message="You have crossed the usage limit. Please signup to get more captions.",
@@ -179,9 +183,9 @@ def upload():
         base64_image = base64.b64encode(image.read())
         base_64_binary = base64.decodebytes(base64_image)
         objects = get_objects(base_64_binary)
-        sorted_objects = [label["Name"].lower() for label in objects["Labels"]]
+        sorted_objects = [label["Name"].lower() for label in objects["Labels"]][:4]
         print(general_mood, moods, sorted_objects)
-        captions = get_caption(general_mood, moods, sorted_objects)
+        captions = get_caption(general_mood=general_mood, moods=moods, objects=sorted_objects)
         print(captions)
         return render_template("main/index.html", captions=captions)
 
@@ -199,7 +203,6 @@ def upload_login():
             )
 
         moods = request.form.to_dict()
-        print(moods)
         sorted_moods = [
             k
             for k, v in sorted(
@@ -217,9 +220,9 @@ def upload_login():
         base64_image = base64.b64encode(image.read())
         base_64_binary = base64.decodebytes(base64_image)
         objects = get_objects(base_64_binary)
-        sorted_objects = [label["Name"].lower() for label in objects["Labels"]]
+        sorted_objects = [label["Name"].lower() for label in objects["Labels"]][:4]
         print(general_mood, moods, sorted_objects)
-        captions = get_caption(general_mood, moods, sorted_objects)
+        captions = get_caption(general_mood=general_mood, moods=moods, objects=sorted_objects)
         return render_template("main/index.html", captions=captions)
 
 

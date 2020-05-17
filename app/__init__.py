@@ -75,7 +75,7 @@ def create_app(config_class=None):
 
             app.logger.setLevel(logging.INFO)
             app.logger.info("Flask Starter startup")
-    except:
+    except Exception:
         # if there is some reason we cannot create the file handler then just pass
         # I have seen this happen when deploying to AWS via zappa
         pass
