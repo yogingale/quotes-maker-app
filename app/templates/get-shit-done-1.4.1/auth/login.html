@@ -5,15 +5,21 @@
         <div class="container tim-container">
 
             <div class="tim-title">
-                <h2>Flask Starter Login Page</h2>
+<!--                <h2>Flask Starter Login Page</h2>-->
                 <h3>{{ server_message }}</h3>
-
             </div>
+            <a class="btn btn-block btn-lg btn-success btn-round oauth-container btn darken-4 white black-text" href="/auth/google/login" style="text-transform:none">
+                    <img width="20px" style="margin-top:7px; margin-right:8px" alt="Google sign-in"
+                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
+                Login with Google
+            </a>
+            <button type="button" onclick="window.location.href='/auth/signup'" class="btn btn-block btn-lg btn-success btn-round">New User?</button>
 
+            <div class="space-30"></div>
             <form action="" method="post">
                 {{ form.hidden_tag() }}
                 <div class="row">
-                    <div class="col-sm-3">
+                    <div>
                         <div class="form-group">
                             <p>
                                 {{ form.email.label }}<br>
@@ -25,7 +31,7 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-3">
+                    <div>
                         <div class="form-group">
                             <p>
                                 {{ form.password.label }}<br>
@@ -36,16 +42,13 @@
                             </p>
                         </div>
                     </div>
-                    <div class="col-sm-3">
+                    <div>
                         <div class="form-group">
                             <p>
-                                <br>
                                 {{ form.remember_me() }} {{ form.remember_me.label }}
                             </p>
                         </div>
                     </div>
-
-                    <button type="button" class="btn btn-round btn-lg btn-default btn-success">New User?</button>
                     <p>{{ form.submit(class="btn btn-block btn-lg btn-info btn-round") }}</p>
                 </div>
             </form>

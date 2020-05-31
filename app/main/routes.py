@@ -188,6 +188,8 @@ def upload_login():
 @main_bp.route("/", methods=["GET"])
 @main_bp.route("/index1", methods=["GET"])
 def index1():
+    if current_user.is_authenticated:
+        return redirect(url_for("main.index"))
     session.setdefault("caption_form_usage_count", 0)
     if session["caption_form_usage_count"] >= 5:
         return render_template(
