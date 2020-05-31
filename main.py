@@ -6,9 +6,7 @@ from config import Config
 app = create_app(config_class=Config)
 app.config.from_object(os.environ.get("APP_SETTINGS"))
 
-# TODO : Add google signup
 # TODO : Add adds
-# TODO : Add a button to disable moods
 # TODO : Add down arrow on banner when submit for action
 # TODO : create carousal banner
 # TODO : restructure python code

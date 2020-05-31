@@ -2030,7 +2030,7 @@ input.ct-red + span + label + span.switch-right {
 
 /* The slider itself */
 .mood-slider {
-  width: 75%;
+  width: 60%;
   height: 5px;
   border-radius: 5px;
   background: #d3d3d3;

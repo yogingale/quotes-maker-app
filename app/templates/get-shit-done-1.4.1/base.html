@@ -192,27 +192,20 @@
             range: "min",
             animate: true
     });
-	$( "#slider-default-love" ).slider({
-			value: 20,
-			orientation: "horizontal",
-			range: "min",
-			animate: true
-	});
-	$( "#slider-default-comedy" ).slider({
-			value: 10,
-			orientation: "horizontal",
-			range: "min",
-			animate: true
-	});
-	$( "#slider-default-motivational" ).slider({
-			value: 15,
-			orientation: "horizontal",
-			range: "min",
-			animate: true
-	});
 	$('.carousel').carousel({
       interval: 4000
     });
+    function setRandomMoods() {
+      document.getElementById("loveRange").value = Math.random() * (100 - 50) + 50;
+      document.getElementById("funnyRange").value = Math.random() * (100 - 0) + 0;
+      document.getElementById("happyRange").value = Math.random() * (100 - 0) + 0;
+      document.getElementById("inspirationRange").value = Math.random() * (100 - 10) + 10;
+      document.getElementById("weirdRange").value = Math.random() * (50 - 0) + 0;
+      document.getElementById("randomRange").value = Math.random() * (100 - 0) + 0;
+      document.getElementById("sadRange").value = Math.random() * (100 - 30) + 30;
+      document.getElementById("lifeRange").value = Math.random() * (100 - 40) + 40;
+      document.getElementById("artRange").value = Math.random() * (50 - 0) + 0;
+    }
 
 
 </script>
