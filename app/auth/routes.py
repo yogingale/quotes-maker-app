@@ -22,7 +22,6 @@ AUTHORIZATION_URL = (
 AUTHORIZATION_SCOPE = "openid email profile"
 
 AUTH_REDIRECT_URI = os.environ.get("FN_AUTH_REDIRECT_URI", default=False)
-BASE_URI = os.environ.get("FN_BASE_URI", default=False)
 CLIENT_ID = os.environ.get("FN_CLIENT_ID", default=False)
 CLIENT_SECRET = os.environ.get("FN_CLIENT_SECRET", default=False)
 

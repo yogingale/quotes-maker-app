@@ -16,6 +16,7 @@ app.config.from_object(os.environ.get("APP_SETTINGS"))
 # TODO : Replace prints with logs
 # TODO : Check GDPR constraints
 # TODO : Add transperant nav bar from creative-tim
+# TODO : Add Readme file for technical details
 
 if __name__ == "__main__":
     app.jinja_env.auto_reload = True
