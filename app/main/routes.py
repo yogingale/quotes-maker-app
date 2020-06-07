@@ -20,6 +20,13 @@ DEFAULT_MOODS = [
     "art",
 ]
 
+# Caption limits
+NUMBER_OF_CAPTIONS = 5
+
+# User limits
+NON_LOGGED_IN_USER_LIMIT = 15
+LOGGED_IN_USER_LIMIT = 35
+
 
 @main_bp.before_app_request
 def before_request():
@@ -27,10 +34,10 @@ def before_request():
 
 
 def get_captions_from_response(response):
-    print(response)
+    current_app.logger.info(f"Response for the captions: {response}")
     response = list(response)
-    if len(response) >= 3:
-        number_of_samples = 3
+    if len(response) >= NUMBER_OF_CAPTIONS:
+        number_of_samples = NUMBER_OF_CAPTIONS
     else:
         number_of_samples = len(response)
     random_samples = random.sample(response, number_of_samples)
@@ -114,7 +121,7 @@ def upload():
     if request.method == "POST":
         count = session.setdefault("caption_form_usage_count", 0)
         session["caption_form_usage_count"] = count + 1
-        if session["caption_form_usage_count"] >= 5:
+        if session["caption_form_usage_count"] >= NON_LOGGED_IN_USER_LIMIT:
             return render_template(
                 "main/index.html",
                 homepage_message="You have crossed the usage limit. Please signup to get more captions.",
@@ -139,11 +146,11 @@ def upload():
         base_64_binary = base64.decodebytes(base64_image)
         objects = get_objects(base_64_binary)
         sorted_objects = [label["Name"].lower() for label in objects["Labels"]][:4]
-        print(general_mood, moods, sorted_objects)
+        current_app.logger.info(general_mood, moods, sorted_objects)
         captions = get_caption(
             general_mood=general_mood, moods=moods, objects=sorted_objects
         )
-        print(captions)
+        current_app.logger.info(f"Final captions: {captions}")
         return render_template("main/index.html", captions=captions)
 
 
@@ -153,7 +160,7 @@ def upload_login():
     if request.method == "POST":
         count = session.setdefault("caption_form_usage_count", 0)
         session["caption_form_usage_count"] = count + 1
-        if session["caption_form_usage_count"] >= 15:
+        if session["caption_form_usage_count"] >= LOGGED_IN_USER_LIMIT:
             return render_template(
                 "main/index.html",
                 homepage_message="You have crossed the usage limit. Please come back tomorrow.",
@@ -178,10 +185,11 @@ def upload_login():
         base_64_binary = base64.decodebytes(base64_image)
         objects = get_objects(base_64_binary)
         sorted_objects = [label["Name"].lower() for label in objects["Labels"]][:4]
-        print(general_mood, moods, sorted_objects)
+        current_app.logger.info(general_mood, moods, sorted_objects)
         captions = get_caption(
             general_mood=general_mood, moods=moods, objects=sorted_objects
         )
+        current_app.logger.info(f"Final captions: {captions}")
         return render_template("main/index.html", captions=captions)
 
 
@@ -191,7 +199,7 @@ def index1():
     if current_user.is_authenticated:
         return redirect(url_for("main.index"))
     session.setdefault("caption_form_usage_count", 0)
-    if session["caption_form_usage_count"] >= 5:
+    if session["caption_form_usage_count"] >= NON_LOGGED_IN_USER_LIMIT:
         return render_template(
             "main/index.html",
             homepage_message="You have crossed the usage limit. Please signup to get more captions.",

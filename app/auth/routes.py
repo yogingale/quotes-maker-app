@@ -21,9 +21,9 @@ AUTHORIZATION_URL = (
 
 AUTHORIZATION_SCOPE = "openid email profile"
 
-AUTH_REDIRECT_URI = os.environ.get("FN_AUTH_REDIRECT_URI", default=False)
-CLIENT_ID = os.environ.get("FN_CLIENT_ID", default=False)
-CLIENT_SECRET = os.environ.get("FN_CLIENT_SECRET", default=False)
+AUTH_REDIRECT_URI = os.environ.get("GOOGLE_LOGIN_AUTH_REDIRECT_URI", default=False)
+CLIENT_ID = os.environ.get("GOOGLE_LOGIN_CLIENT_ID", default=False)
+CLIENT_SECRET = os.environ.get("GOOGLE_LOGIN_CLIENT_SECRET", default=False)
 
 AUTH_TOKEN_KEY = "auth_token"
 AUTH_STATE_KEY = "auth_state"
