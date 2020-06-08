@@ -34,7 +34,7 @@ def before_request():
 
 
 def get_captions_from_response(response):
-    current_app.logger.info(f"Response for the captions: {response}")
+    current_app.logger.info("Response for the captions: %s ", response)
     response = list(response)
     if len(response) >= NUMBER_OF_CAPTIONS:
         number_of_samples = NUMBER_OF_CAPTIONS
@@ -117,7 +117,6 @@ def get_objects(encoded_image):
 
 @main_bp.route("/upload", methods=["POST"])
 def upload():
-    # print(request.form.to_dict())
     if request.method == "POST":
         count = session.setdefault("caption_form_usage_count", 0)
         session["caption_form_usage_count"] = count + 1
@@ -141,16 +140,24 @@ def upload():
         except IndexError:
             general_mood = moods = None
 
-        image = request.files["photo"]
-        base64_image = base64.b64encode(image.read())
-        base_64_binary = base64.decodebytes(base64_image)
-        objects = get_objects(base_64_binary)
-        sorted_objects = [label["Name"].lower() for label in objects["Labels"]][:4]
-        current_app.logger.info(general_mood, moods, sorted_objects)
+        sorted_objects = None
+        if request.files["photo"].read():
+            image = request.files["photo"]
+            base64_image = base64.b64encode(image.read())
+            base_64_binary = base64.decodebytes(base64_image)
+            objects = get_objects(base_64_binary)
+            sorted_objects = [label["Name"].lower() for label in objects["Labels"]][:4]
+
+        current_app.logger.info(
+            "general_mood: %s, moods: %s, objects: %s",
+            general_mood,
+            moods,
+            sorted_objects,
+        )
         captions = get_caption(
             general_mood=general_mood, moods=moods, objects=sorted_objects
         )
-        current_app.logger.info(f"Final captions: {captions}")
+        current_app.logger.info(f"Final captions: %s", captions)
         return render_template("main/index.html", captions=captions)
 
 
@@ -180,16 +187,24 @@ def upload_login():
         except IndexError:
             general_mood = moods = None
 
-        image = request.files["photo"]
-        base64_image = base64.b64encode(image.read())
-        base_64_binary = base64.decodebytes(base64_image)
-        objects = get_objects(base_64_binary)
-        sorted_objects = [label["Name"].lower() for label in objects["Labels"]][:4]
-        current_app.logger.info(general_mood, moods, sorted_objects)
+        sorted_objects = None
+        if request.files["photo"].read():
+            image = request.files["photo"]
+            base64_image = base64.b64encode(image.read())
+            base_64_binary = base64.decodebytes(base64_image)
+            objects = get_objects(base_64_binary)
+            sorted_objects = [label["Name"].lower() for label in objects["Labels"]][:4]
+
+        current_app.logger.info(
+            "general_mood: %s, moods: %s, objects: %s",
+            general_mood,
+            moods,
+            sorted_objects,
+        )
         captions = get_caption(
             general_mood=general_mood, moods=moods, objects=sorted_objects
         )
-        current_app.logger.info(f"Final captions: {captions}")
+        current_app.logger.info(f"Final captions: %s", captions)
         return render_template("main/index.html", captions=captions)
 
 
