@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+
+{% block app_content %}
+    <div class="main">
+        <div class="container tim-container" style="max-width:800px; padding-top:100px">
+<!--            <h1 class="text-center">Get AI based Captions for your picture</h1>-->
+            <h3 class="text-center"> Select Picture and Mood for your Caption.</h3>
+            <h1 class="text-center">
+                {% if captions %}
+                    {% for caption in captions %}
+                       {% for author, caption in caption.items() %}
+                          <small class="quote">{{caption}}<br></small>
+                          <small class="subtitle">- {{author}}<br><br></small>
+                       {% endfor %}
+                    {% endfor %}
+                {%  endif %}
+            </h1>
+            <!--     end extras -->
+        </div>
+        <div class="container tim-container" style="max-width:800px; padding-top:100px">
+            {% if login == True %}
+                <form name="myform" action = "{{ url_for('main.upload_login') }}" method = "POST" enctype = "multipart/form-data">
+            {% else %}
+               <form name="myform" action = "{{ url_for('main.upload') }}" method = "POST" enctype = "multipart/form-data">
+            {% endif %}
+
+                   <h5><i><b>Picture </b></i> for Caption <small><b>(optional) </b></small>:
+                    <input type = "file" id="myfile" name = "photo" class="btn btn-info btn-sm"/>
+                   </h5>
+                   <div class="space-30"></div>
+                   <h5>Select <i><b>Mood </b></i>for Caption:</h5>
+                   <button type="button" onclick="setRandomMoods()" class="btn btn-sm btn-success btn-round">Set random Moods for me!</button>
+                   <b><h2 class="text-primary">
+                   <div class="slidecontainer">
+                       <small class="ct-red">Love:</small>
+                       <input type="range" id="loveRange" min="0" name="love" max="100" value="0" class="mood-slider"><br>
+                       <small class="ct-azzure">Funny:</small>
+                       <input type="range" id="funnyRange" min="0" name="funny" max="100" value="0" class="mood-slider"><br>
+                       <small class="ct-orange">Happy:</small>
+                       <input type="range" id="happyRange" min="0" name="happy" max="100" value="0" class="mood-slider"><br>
+                       <small class="ct-green">Inspiration:</small>
+                       <input type="range" id="inspirationRange" min="0" name="inspiration" max="100" value="0" class="mood-slider"><br>
+                       <small class="ct-blue">Crazy:</small>
+                       <input type="range" id="weirdRange" min="0" name="weird" max="100" value="0" class="mood-slider"><br>
+                       <small class="ct-orange">Random:</small>
+                       <input type="range" id="randomRange" min="0" name="random" max="100" value="0" class="mood-slider"><br>
+                       <small class="ct-azzure">Sad:</small>
+                       <input type="range" id="sadRange" min="0" name="sad" max="100" value="0" class="mood-slider"><br>
+                       <small class="ct-green">Life:</small>
+                       <input type="range" id="lifeRange" min="0" name="life" max="100" value="0" class="mood-slider"><br>
+                       <small class="ct-red">Art:</small>
+                       <input type="range" id="artRange" min="0" name="art" max="100" value="0" class="mood-slider"><br>
+                   </div>
+                   </h2></b>
+
+                    <input type = "submit" class="btn btn-block btn-lg btn-info btn-round"/>
+                </form>
+        </div>
+
+        <div class="space"></div>
+
+        <!-- end container -->
+    </div>
+    <!-- end main -->
+
+    <div id="carousel">
+        <!--
+                IMPORTANT - This carousel can have a special class for a smooth transition "gsdk-transition". Since javascript cannot be overwritten, if you want to use it, you can use the bootstrap.js or bootstrap.min.js from the GSDKit or you can open your bootstrap.js file, search for "emulateTransitionEnd(600)" and change it with "emulateTransitionEnd(1200)"
+
+        -->
+        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+            <!-- Indicators -->
+            <ol class="carousel-indicators">
+                <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+                <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+            </ol>
+
+            <!-- Wrapper for slides -->
+            <div class="carousel-inner">
+                <div class="item active">
+                    <img src="{{ url_for('static', filename='assets/img/carousel_blue.png') }}" alt="Awesome Image">
+                </div>
+                <div class="item">
+                    <img src="{{ url_for('static', filename='assets/img/carousel_green.png') }}" alt="Awesome Image">
+                </div>
+                <div class="item">
+                    <img src="{{ url_for('static', filename='assets/img/carousel_red.png') }}" alt="Awesome Image">
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
+                <span class="fa fa-angle-left"></span>
+            </a>
+            <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
+                <span class="fa fa-angle-right"></span>
+            </a>
+        </div>
+    </div> <!-- end carousel -->
+
+<script>
+
+</script>
+{% endblock %}
