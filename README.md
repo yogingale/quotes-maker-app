@@ -6,6 +6,10 @@
 - Create captions based on image and moods.
 - Custom and Google Signup/Login added
 
+### Deployment
+
+If you push on dev branch site will be deployed on https://caption-maker-app-dev.herokuapp.com/
+Pushing changes on master deploys the site on https://caption-maker-app.herokuapp.com/
 
 ### DB
 Mongo
