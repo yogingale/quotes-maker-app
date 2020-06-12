@@ -15,4 +15,5 @@ class Config(object):
     STATIC_PATH = f"static/{CONTENT_DIR}"
     TEMPLATES_DIR = f"templates/{CONTENT_DIR}"
     MONGO_DB_PASSWORD = urllib.parse.quote_plus(os.environ.get("MONGO_DB_PASSWORD"))
-    MONGO_DB_URI = f"mongodb+srv://caption-maker:{MONGO_DB_PASSWORD}@cluster0-9y16x.mongodb.net/test?retryWrites=true&w=majority"
+    MONGO_DB_NAME = urllib.parse.quote_plus(os.environ.get("MONGO_DB_NAME"))
+    MONGO_DB_URI = f"mongodb+srv://caption-maker:{MONGO_DB_PASSWORD}@cluster0-9y16x.mongodb.net/{MONGO_DB_NAME}?retryWrites=true&w=majority"

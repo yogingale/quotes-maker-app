@@ -11,9 +11,6 @@
 If you push on dev branch site will be deployed on https://caption-maker-app-dev.herokuapp.com/ and https://dev.captionmaker.live
 Pushing changes on master deploys the site on https://caption-maker-app.herokuapp.com/ and https://www.captionmaker.live
 
-### DB
-Mongo
-
 ### Backend
 DB - Mongo  
 Object recognition from image - Amazon Rekognition  
@@ -37,3 +34,6 @@ python main.py
 ### Themes
 
 This project has CreativeTim (www.creative-tim.com) Get-Shit-Done themes used.
+
+### Useful links
+Google signup tokens: https://console.developers.google.com/apis/credentials?pli=1

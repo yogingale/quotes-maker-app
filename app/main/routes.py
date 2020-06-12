@@ -20,6 +20,16 @@ DEFAULT_MOODS = [
     "art",
 ]
 
+DEFAULT_OBJECTS = [
+    "mountain",
+    "sea",
+    "beach",
+    "girl",
+    "boy",
+    "car",
+    "coffee"
+]
+
 # Caption limits
 NUMBER_OF_CAPTIONS = 5
 
@@ -52,9 +62,9 @@ def get_captions_from_response(response):
 
 
 def get_caption(
-    general_mood: str = re.compile("(.*?)"),
-    moods: list = [re.compile("(.*?)")],
-    objects: list = [re.compile("(.*?)")],
+    general_mood: str = None,
+    moods: list = None,
+    objects: list = None,
 ):
     client = init_db()
     db = client.caption_maker
@@ -62,10 +72,10 @@ def get_caption(
 
     if not general_mood:
         if not moods:
-            moods = [re.compile("(.*?)")]
+            moods = [random.choice(DEFAULT_MOODS)]
         if not objects:
-            objects = [re.compile("(.*?)")]
-        resp = captions.find({"moods": {"$in": moods}, "objects": {"$in": objects},})
+            objects = [random.choice(DEFAULT_OBJECTS)]
+        resp = captions.find({"moods": {"$in": moods}, "objects": {"$in": objects}})
         try:
             return get_captions_from_response(resp)
         except ValueError:
