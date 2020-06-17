@@ -20,15 +20,7 @@ DEFAULT_MOODS = [
     "art",
 ]
 
-DEFAULT_OBJECTS = [
-    "mountain",
-    "sea",
-    "beach",
-    "girl",
-    "boy",
-    "car",
-    "coffee"
-]
+DEFAULT_OBJECTS = ["mountain", "sea", "beach", "girl", "boy", "car", "coffee"]
 
 # Caption limits
 NUMBER_OF_CAPTIONS = 5
@@ -62,9 +54,7 @@ def get_captions_from_response(response):
 
 
 def get_caption(
-    general_mood: str = None,
-    moods: list = None,
-    objects: list = None,
+    general_mood: str = None, moods: list = None, objects: list = None,
 ):
     client = init_db()
     db = client.caption_maker
@@ -151,7 +141,7 @@ def upload():
             general_mood = moods = None
 
         sorted_objects = None
-        if request.files["photo"].read():
+        if request.files["photo"]:
             image = request.files["photo"]
             base64_image = base64.b64encode(image.read())
             base_64_binary = base64.decodebytes(base64_image)
@@ -198,7 +188,7 @@ def upload_login():
             general_mood = moods = None
 
         sorted_objects = None
-        if request.files["photo"].read():
+        if request.files["photo"]:
             image = request.files["photo"]
             base64_image = base64.b64encode(image.read())
             base_64_binary = base64.decodebytes(base64_image)
