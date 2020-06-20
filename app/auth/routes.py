@@ -2,6 +2,8 @@ import functools
 import os
 import uuid
 
+from urllib.parse import urlparse
+
 import flask
 import google.oauth2.credentials
 import googleapiclient.discovery
@@ -21,7 +23,6 @@ AUTHORIZATION_URL = (
 
 AUTHORIZATION_SCOPE = "openid email profile"
 
-AUTH_REDIRECT_URI = os.environ.get("GOOGLE_LOGIN_AUTH_REDIRECT_URI", default=False)
 CLIENT_ID = os.environ.get("GOOGLE_LOGIN_CLIENT_ID", default=False)
 CLIENT_SECRET = os.environ.get("GOOGLE_LOGIN_CLIENT_SECRET", default=False)
 
@@ -128,11 +129,10 @@ def no_cache(view):
 
 @auth_bp.route("/google/login")
 def google_login():
+    base_url = urlparse(request.base_url)._replace(path="").geturl()
+    redirect_uri = f"{base_url}/auth/google/auth"
     session = OAuth2Session(
-        CLIENT_ID,
-        CLIENT_SECRET,
-        scope=AUTHORIZATION_SCOPE,
-        redirect_uri=AUTH_REDIRECT_URI,
+        CLIENT_ID, CLIENT_SECRET, scope=AUTHORIZATION_SCOPE, redirect_uri=redirect_uri,
     )
 
     uri, state = session.authorization_url(AUTHORIZATION_URL)
@@ -157,7 +157,7 @@ def google_auth_redirect():
         CLIENT_SECRET,
         scope=AUTHORIZATION_SCOPE,
         state=flask.session[AUTH_STATE_KEY],
-        redirect_uri=AUTH_REDIRECT_URI,
+        redirect_uri=request.base_url,
     )
 
     oauth2_tokens = session.fetch_access_token(
