@@ -5,7 +5,7 @@
     <div class="main">
         <div class="container tim-container" style="max-width:800px; padding-top:100px">
 <!--            <h1 class="text-center">Get AI based Captions for your picture</h1>-->
-            <h3 class="text-center"> Select Picture and Mood for your Caption.</h3>
+            <h3 class="text-center"> Select Picture and Mood for your Quotes.</h3>
             <h1 class="text-center">
                 {% if captions %}
                     {% for caption in captions %}
@@ -25,11 +25,11 @@
                <form name="myform" action = "{{ url_for('main.upload') }}" method = "POST" enctype = "multipart/form-data">
             {% endif %}
 
-                   <h5><i><b>Picture </b></i> for Caption <small><b>(optional) </b></small>:
+                   <h5><i><b>Picture </b></i> for Quotes <small><b>(optional) </b></small>:
                     <input type = "file" id="myfile" name = "photo" class="btn btn-info btn-sm"/>
                    </h5>
                    <div class="space-30"></div>
-                   <h5>Select <i><b>Mood </b></i>for Caption:</h5>
+                   <h5>Select <i><b>Mood </b></i>for Quotes:</h5>
                    <button type="button" onclick="setRandomMoods()" class="btn btn-sm btn-success btn-round">Set random Moods for me!</button>
                    <b><h2 class="text-primary">
                    <div class="slidecontainer">
