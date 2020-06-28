@@ -10,6 +10,7 @@ load_dotenv(os.path.join(basedir, ".env"))
 class Config(object):
     # needed by flask wtf for CSRC
     SECRET_KEY = os.environ.get("SECRET_KEY") or "YOU WILL NEVER GUESS"
+    APP_STAGE = os.environ.get("APP_STAGE")
     CSRF_ENABLED = True
     CONTENT_DIR = "caption-maker"
     STATIC_PATH = f"static/{CONTENT_DIR}"
