@@ -158,7 +158,7 @@ def upload():
             general_mood=general_mood, moods=moods, objects=sorted_objects
         )
         current_app.logger.info(f"Final captions: %s", captions)
-        return render_template("main/index.html", captions=captions)
+        return render_template("main/index.html", captions=captions, login=False)
 
 
 @main_bp.route("/upload-login", methods=["POST"])
@@ -205,7 +205,7 @@ def upload_login():
             general_mood=general_mood, moods=moods, objects=sorted_objects
         )
         current_app.logger.info(f"Final captions: %s", captions)
-        return render_template("main/index.html", captions=captions)
+        return render_template("main/index.html", captions=captions, login=True)
 
 
 @main_bp.route("/", methods=["GET"])
