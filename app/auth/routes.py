@@ -49,7 +49,7 @@ def login():
         "auth/login.html",
         title="Sign In",
         form=form,
-        # server_message="Example Login page using Creative Tim Template and Flask",
+        # server_message="Example Login page",
     )
 
 
@@ -72,7 +72,7 @@ def signup():
         "auth/signup.html",
         title="Sign In",
         form=form,
-        # server_message="Example signup page using Creative Tim Template and Flask",
+        # server_message="Example signup page",
     )
 
 

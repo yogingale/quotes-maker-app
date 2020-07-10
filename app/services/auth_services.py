@@ -1,6 +1,7 @@
 from app import login_manager
 from app.models import User
 from flask_login import current_user
+from flask import current_app
 from werkzeug.exceptions import Unauthorized
 from app.services.db_services import init_db
 
@@ -13,7 +14,7 @@ def load_user(id):
     :return: return User object or None
     """
 
-    # current_app.logger.info(f'load_user: {id}')
+    current_app.logger.info(f"load_user: {id}")
     client = init_db()
     db = client.caption_maker
     users = db.users
@@ -33,7 +34,7 @@ def create_user(data):
     :param data: user data
     :return: return User status
     """
-    # current_app.logger.info(f'load_user: {id}')
+    current_app.logger.info(f"load_user: {id}")
     client = init_db()
     db = client.caption_maker
     users = db.users

@@ -224,6 +224,5 @@ Temporary Items
 tests/.pytest_cache/
 tests/logs/
 
-app/static/private/paper-dashboard-2-pro/
-app/templates/private/paper-dashboard-2-pro/
 
+samples/

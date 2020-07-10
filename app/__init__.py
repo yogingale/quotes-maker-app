@@ -50,10 +50,6 @@ def create_app(config_class=None):
 
     app.register_blueprint(user_profile_bp, url_prefix="/user")
 
-    from app.tables import tables_bp as tables_bp
-
-    app.register_blueprint(tables_bp, url_prefix="/tables")
-
     login_manager.login_view = "auth.login"
     login_manager.login_message = "Please log in to access this page."
 

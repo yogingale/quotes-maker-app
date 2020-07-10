@@ -5,7 +5,6 @@ from app.services.db_services import init_db
 
 import base64
 import random
-import re
 import boto3
 
 DEFAULT_MOODS = [

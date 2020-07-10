@@ -4,7 +4,7 @@ python:
 install:
 - pip install -r requirements-dev.txt
 script:
-- black . --check --exclude=".venv/|node_modules"
+- black . --check --exclude=".venv/"
 - isort --check-only *.py **/*.py
 deploy:
   - provider: heroku
