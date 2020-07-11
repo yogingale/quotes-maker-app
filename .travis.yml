@@ -1,0 +1,15 @@
+language: python
+python:
+- '3.8'
+install:
+- pip install -r requirements-dev.txt
+script:
+- black . --check --exclude=".venv/"
+- isort --check-only *.py **/*.py
+deploy:
+  - provider: heroku
+    api_key:
+      secure: aULTVrQvJVrNkm1CScQlClN/gvw0Cb6yM+O4nBoemduCnsd4xCOkd5hxlsxwwqE/9A8dgctQTKrMR9esXhZRv3Jx+LC0pbuu5Iokz0CqJsZ6WGj58zOMm8seIGtAH3NPnqUZei4foHPk0vROGsYZ6pXgbQJ0VPlTFMlohZtOsh+AL8axzYsXLwtFd81msaZnsKi+oBHFK8I12RiWuqbpSdPKFBjRfbxWbMLIxGWSwcUlXNz7WPmsVimLqwnCajRyYgoP4Ul5xk7SHGIUjkW9hcuR62RbL633h8xbj+3+3vYcgW4zozbVBv9vw5grVtjfHXkn2dfjjw87/CUpd00yAhyVGx/l9m4Ua+HV4sfEEgfMJyRJ8w6AA5J75sPI3Tiaj5tqcgFj0whJI/ClzjNrt5kmXEyN9BfY3UAAM+PPSXaexSySd9AcyeS0pprLZbfxXe8FpGTJWtcwB7kZt5MrqV3j4WvjBX6BMtSoPYV0rVKk+lamW1lSYuc4phLSn1hT/o79fsd6BwIlc5Hi3FUxLZ5+oUvjiZ1/0fvUo8XJqoOVMuwB43oypZmyM0qwwhfMz1JRQo+j/VRMDydPB9zS1G4IHxsmArV1G2hk7Se9Ms2zkfLl03+yd7KijFY/WVUWEyxUokrqL6Koxkw7zBH4BA31LCHECTpmZ6ScBbUSIg8=
+    app:
+      master: caption-maker-app
+      dev: caption-maker-app-dev

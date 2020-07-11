@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block app_content %}
+    <div class="main">
+        <div class="container tim-container" style="max-width:800px; padding-top:100px">
+            <h1 class="text-center">Page 2 <br> Sample
+                <small class="subtitle">A new blueprint to handle another subsection of the applications</small>
+            </h1>
+            <p>Flask starter includes the Flask framework setup to handle logins via flask-login and forms via flask-wtf
+                with error pages.</p>
+            <p>This starter applications uses the Creative Tim 'Get SH IT done' bootstrap template</p>
+            <!--     end extras -->
+        </div>
+        <div class="container tim-container" style="max-width:800px; padding-top:100px">
+            <a href="{{ url_for('main.index') }}" class="btn btn-block btn-lg btn-info btn-round">Main Index Page</a>
+        </div>
+        <div class="space"></div>
+
+
+        <!-- end container -->
+    </div>
+    <!-- end main -->
+
+    <div id="carousel">
+        <!--
+                IMPORTANT - This carousel can have a special class for a smooth transition "gsdk-transition". Since javascript cannot be overwritten, if you want to use it, you can use the bootstrap.js or bootstrap.min.js from the GSDKit or you can open your bootstrap.js file, search for "emulateTransitionEnd(600)" and change it with "emulateTransitionEnd(1200)"
+
+        -->
+        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+            <!-- Indicators -->
+            <ol class="carousel-indicators">
+                <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+                <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+            </ol>
+
+            <!-- Wrapper for slides -->
+            <div class="carousel-inner">
+                <div class="item active">
+                    <img src="{{ url_for('static', filename='assets/img/carousel_blue.png') }}" alt="Awesome Image">
+                </div>
+                <div class="item">
+                    <img src="{{ url_for('static', filename='assets/img/carousel_green.png') }}" alt="Awesome Image">
+                </div>
+                <div class="item">
+                    <img src="{{ url_for('static', filename='assets/img/carousel_red.png') }}" alt="Awesome Image">
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
+                <span class="fa fa-angle-left"></span>
+            </a>
+            <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
+                <span class="fa fa-angle-right"></span>
+            </a>
+        </div>
+    </div> <!-- end carousel -->
+
+{% endblock %}
