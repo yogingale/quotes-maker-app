@@ -44,7 +44,6 @@ def create_user(data):
         "email": data["email"],
         "roles": ["user"],
     }
-
     users.insert_one(data)
 
     return True
