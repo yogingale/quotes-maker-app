@@ -5,7 +5,7 @@ install:
 - pip install -r requirements-dev.txt
 script:
 - black . --check --exclude=".venv/"
-- isort --check-only *.py **/*.py
+- isort --check-only --diff *.py **/*.py
 deploy:
   - provider: heroku
     api_key:

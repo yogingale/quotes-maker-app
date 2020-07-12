@@ -7,7 +7,7 @@ from urllib.parse import urlparse
 import flask
 import google.oauth2.credentials
 import googleapiclient.discovery
-from authlib.client import OAuth2Session
+from authlib.integrations.requests_client import OAuth2Session
 from flask import flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_user, logout_user
 from werkzeug.urls import url_parse
@@ -135,7 +135,7 @@ def google_login():
         CLIENT_ID, CLIENT_SECRET, scope=AUTHORIZATION_SCOPE, redirect_uri=redirect_uri,
     )
 
-    uri, state = session.authorization_url(AUTHORIZATION_URL)
+    uri, state = session.create_authorization_url(AUTHORIZATION_URL)
 
     flask.session[AUTH_STATE_KEY] = state
     flask.session.permanent = True

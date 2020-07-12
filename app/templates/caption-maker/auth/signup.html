@@ -14,9 +14,10 @@
                         src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
                 Signup with Google
             </a>
-             <div class="space-30"></div>
+            <button type="button" onclick="window.location.href='/auth/login'" class="btn btn-block btn-lg btn-success btn-round">Existing User? Login here</button>
+            <div class="space-30"></div>
 
-            <form action="" method="post">
+            <form action="/auth/login" method="post">
                 {{ form.hidden_tag() }}
                 <div class="row">
                     <div >

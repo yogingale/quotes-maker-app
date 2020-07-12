@@ -2,9 +2,9 @@ import json
 from ast import literal_eval
 
 import numpy as np
+
 import pandas as pd
 import spacy
-
 from app.services.db_services import init_db
 
 """
