@@ -47,9 +47,9 @@ def login():
         return redirect(next_page)
     return render_template(
         "auth/login.html",
-        title="Sign In",
+        title="Log In",
         form=form,
-        # server_message="Example Login page",
+        homepage_message=request.args.get("homepage_message"),
     )
 
 
@@ -61,18 +61,24 @@ def signup():
     if form.validate_on_submit():
         user = auth_services.load_user(id=form.email.data)
         if user:
-            flash("Email address already exists. Try with different email.")
-            return redirect(url_for("auth.signup"))
+            return redirect(
+                url_for(
+                    "auth.signup",
+                    homepage_message="Email address already exists. Try with different email.",
+                )
+            )
         auth_services.create_user(data=form.data)
-        next_page = request.args.get("next")
-        if not next_page or url_parse(next_page).netloc != "":
-            next_page = url_for("main.index")
-        return redirect(next_page)
+        return redirect(
+            url_for(
+                "auth.login",
+                homepage_message="Please login with newly created account.",
+            )
+        )
     return render_template(
         "auth/signup.html",
-        title="Sign In",
+        title="Sign Up",
         form=form,
-        # server_message="Example signup page",
+        homepage_message=request.args.get("homepage_message"),
     )
 
 
