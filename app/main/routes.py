@@ -43,7 +43,9 @@ def get_captions_from_response(response):
         number_of_samples = len(response)
     random_samples = random.sample(response, number_of_samples)
     captions = []
+    current_app.logger.info("Final captions:")
     for sample in random_samples:
+        current_app.logger.info(sample)
         captions.append({sample["author"]: sample["caption"]})
 
     if not captions:
@@ -64,7 +66,7 @@ def get_caption(
             moods = [random.choice(DEFAULT_MOODS)]
         if not objects:
             objects = [random.choice(DEFAULT_OBJECTS)]
-        resp = captions.find({"moods": {"$in": moods}, "objects": {"$in": objects}})
+        resp = captions.find({"moods": {"$in": moods}, "objects_": {"$in": objects}})
         try:
             return get_captions_from_response(resp)
         except ValueError:
@@ -76,7 +78,7 @@ def get_caption(
             {
                 "general_mood": general_mood,
                 "moods": {"$in": moods},
-                "objects": {"$in": objects},
+                "objects_": {"$in": objects},
             }
         )
         try:
@@ -93,7 +95,7 @@ def get_caption(
 
     if not moods and objects:
         resp = captions.find(
-            {"general_mood": general_mood, "objects": {"$in": objects},}
+            {"general_mood": general_mood, "objects_": {"$in": objects},}
         )
         try:
             return get_captions_from_response(resp)
@@ -107,6 +109,36 @@ def get_caption(
         except ValueError:
             general_mood = random.choice(DEFAULT_MOODS)
             return get_caption(general_mood)
+
+
+def get_captions(request):
+    moods = request.form.to_dict()
+    sorted_moods = [
+        k
+        for k, v in sorted(moods.items(), key=lambda item: int(item[1]), reverse=True)
+        if int(v) > 0
+    ]
+    try:
+        general_mood = sorted_moods[0]
+        moods = sorted_moods[1:6]
+    except IndexError:
+        general_mood = moods = None
+
+    sorted_objects = None
+    if request.files["photo"]:
+        image = request.files["photo"]
+        base64_image = base64.b64encode(image.read())
+        base_64_binary = base64.decodebytes(base64_image)
+        objects = get_objects(base_64_binary)
+        sorted_objects = [label["Name"].lower() for label in objects["Labels"]][:4]
+
+    current_app.logger.info(
+        "general_mood: %s, moods: %s, objects: %s", general_mood, moods, sorted_objects,
+    )
+    captions = get_caption(
+        general_mood=general_mood, moods=moods, objects=sorted_objects
+    )
+    return captions
 
 
 def get_objects(encoded_image):
@@ -125,44 +157,12 @@ def upload():
                 homepage_message="You have crossed the usage limit. Please signup to get more captions.",
             )
 
-        moods = request.form.to_dict()
-        sorted_moods = [
-            k
-            for k, v in sorted(
-                moods.items(), key=lambda item: int(item[1]), reverse=True
-            )
-            if int(v) > 0
-        ]
-        try:
-            general_mood = sorted_moods[0]
-            moods = sorted_moods[1:6]
-        except IndexError:
-            general_mood = moods = None
-
-        sorted_objects = None
-        if request.files["photo"]:
-            image = request.files["photo"]
-            base64_image = base64.b64encode(image.read())
-            base_64_binary = base64.decodebytes(base64_image)
-            objects = get_objects(base_64_binary)
-            sorted_objects = [label["Name"].lower() for label in objects["Labels"]][:4]
-
-        current_app.logger.info(
-            "general_mood: %s, moods: %s, objects: %s",
-            general_mood,
-            moods,
-            sorted_objects,
-        )
-        captions = get_caption(
-            general_mood=general_mood, moods=moods, objects=sorted_objects
-        )
-        current_app.logger.info(f"Final captions: %s", captions)
+        captions = get_captions(request)
         return render_template("main/index.html", captions=captions, login=False)
 
 
 @main_bp.route("/upload-login", methods=["POST"])
 def upload_login():
-    # print(request.form.to_dict())
     if request.method == "POST":
         count = session.setdefault("caption_form_usage_count", 0)
         session["caption_form_usage_count"] = count + 1
@@ -172,46 +172,19 @@ def upload_login():
                 homepage_message="You have crossed the usage limit. Please come back tomorrow.",
             )
 
-        moods = request.form.to_dict()
-        sorted_moods = [
-            k
-            for k, v in sorted(
-                moods.items(), key=lambda item: int(item[1]), reverse=True
-            )
-            if int(v) > 0
-        ]
-        try:
-            general_mood = sorted_moods[0]
-            moods = sorted_moods[1:6]
-        except IndexError:
-            general_mood = moods = None
-
-        sorted_objects = None
-        if request.files["photo"]:
-            image = request.files["photo"]
-            base64_image = base64.b64encode(image.read())
-            base_64_binary = base64.decodebytes(base64_image)
-            objects = get_objects(base_64_binary)
-            sorted_objects = [label["Name"].lower() for label in objects["Labels"]][:4]
-
-        current_app.logger.info(
-            "general_mood: %s, moods: %s, objects: %s",
-            general_mood,
-            moods,
-            sorted_objects,
-        )
-        captions = get_caption(
-            general_mood=general_mood, moods=moods, objects=sorted_objects
-        )
-        current_app.logger.info(f"Final captions: %s", captions)
+        captions = get_captions(request)
         return render_template("main/index.html", captions=captions, login=True)
 
 
 @main_bp.route("/", methods=["GET"])
-@main_bp.route("/index1", methods=["GET"])
-def index1():
+@main_bp.route("/index", methods=["GET"])
+def index():
     if current_user.is_authenticated:
-        return redirect(url_for("main.index"))
+        return render_template(
+            "main/index.html",
+            server_message="Flask, Jinja and Creative Tim.. working together!",
+            login=True,
+        )
     session.setdefault("caption_form_usage_count", 0)
     if session["caption_form_usage_count"] >= NON_LOGGED_IN_USER_LIMIT:
         return render_template(
@@ -223,14 +196,4 @@ def index1():
         "main/index.html",
         server_message="Flask, Jinja and Creative Tim.. working together!",
         login=False,
-    )
-
-
-@main_bp.route("/index", methods=["GET"])
-@login_required
-def index():
-    return render_template(
-        "main/index.html",
-        server_message="Flask, Jinja and Creative Tim.. working together!",
-        login=True,
     )
