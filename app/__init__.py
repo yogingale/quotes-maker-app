@@ -2,13 +2,31 @@ import logging
 import os
 from logging.handlers import RotatingFileHandler
 
-from flask import Flask
+from flask import Flask, request
 from flask_login import LoginManager
 
-from app.context_processors import is_active_link
 from app.flask_csrf_test_client import FlaskCSRFClient
 
 login_manager = LoginManager()
+
+
+def is_active_link(link_names):
+    """
+    check the passed in collection of link names with the current
+    url.  If there is a match, return 'active', else empty string
+
+    Typical usage:
+    <li class="{{ is_active_link( [url_for('user.user_profile')] ) }}">
+
+
+    :param link_names: collection of link names.
+    :return: string 'active' is the current url matches the parameter, else empty string.
+    """
+    current_url_rule = request.url_rule.rule
+    if current_url_rule in link_names:
+        return "active"
+    else:
+        return ""
 
 
 def create_app(config_class=None):
