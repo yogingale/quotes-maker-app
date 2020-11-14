@@ -39,6 +39,16 @@ class Captions(Document):
     tags = ListField(StringField(max_length=30))
 
 
+class Users(Document):
+    username = StringField(required=True, max_length=250)
+    password = StringField(required=True, max_length=50)
+    email = StringField(required=True, max_length=50)
+    roles = StringField(max_length=50)
+    moods = ListField(StringField(max_length=50))
+    objects_ = ListField(StringField(max_length=50))
+    tags = ListField(StringField(max_length=30))
+
+
 @dataclass
 class MongoManager:
     name: str
@@ -119,3 +129,13 @@ class MongoManager:
             except ValueError:
                 general_mood = random.choice(DEFAULT_MOODS)
                 return self.get_caption(general_mood)
+
+    @init_db
+    def get_users(self, id: str) -> list:
+        """Get Users details matching email address."""
+        return Users.objects(email=id)
+
+    @init_db
+    def create_user(self, **kwargs) -> list:
+        """Create User."""
+        return Users(**kwargs).save()

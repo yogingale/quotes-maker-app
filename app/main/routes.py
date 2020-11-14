@@ -1,10 +1,9 @@
 from app.main import main_bp
 from flask import current_app, request, render_template, session, redirect, url_for
 from flask_login import current_user, login_required
-from app.services.db_services import init_db
 
-from .mongo import MongoManager
-from .aws import Rekognition
+from app.services.mongo import MongoManager
+from app.services.aws import Rekognition
 import base64
 import random
 import boto3

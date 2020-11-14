@@ -5,7 +5,6 @@ from logging.handlers import RotatingFileHandler
 from flask import Flask, request
 from flask_login import LoginManager
 
-from app.flask_csrf_test_client import FlaskCSRFClient
 
 login_manager = LoginManager()
 
@@ -37,10 +36,6 @@ def create_app(config_class=None):
         template_folder=config_class.TEMPLATES_DIR,
     )
     app.config.from_object(config_class)
-
-    # override the default test_client with one that support csrf
-    # forms
-    app.test_client_class = FlaskCSRFClient
 
     login_manager.init_app(app)
 
