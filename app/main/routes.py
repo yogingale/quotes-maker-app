@@ -2,7 +2,7 @@ from app.main import main_bp
 from flask import current_app, request, render_template, session, redirect, url_for
 from flask_login import current_user, login_required
 
-from app.services.mongo import MongoManager
+from app.services.mongo import MongoManager, DEFAULT_MOODS
 from app.services.aws import Rekognition
 import base64
 import random
@@ -59,10 +59,10 @@ def upload():
                 homepage_message="You have crossed the usage limit. Please signup to get more captions.",
             )
         general_mood, moods, sorted_objects = process_request(request)
-        captions = mongo.get_captions(
+        resp = mongo.get_captions(
             general_mood=general_mood, moods=moods, objects=sorted_objects
         )
-        return render_template("main/index.html", captions=captions, login=False)
+        return render_template("main/index.html", captions=resp["captions"], login=False)
 
 
 @main_bp.route("/upload-login", methods=["POST"])
@@ -77,10 +77,10 @@ def upload_login():
             )
 
         general_mood, moods, sorted_objects = process_request(request)
-        captions = mongo.get_captions(
+        resp = mongo.get_captions(
             general_mood=general_mood, moods=moods, objects=sorted_objects
         )
-        return render_template("main/index.html", captions=captions, login=True)
+        return render_template("main/index.html", captions=resp["captions"], keywords=resp["keywords"], login=True)
 
 
 @main_bp.route("/", methods=["GET"])
@@ -104,3 +104,29 @@ def index():
         server_message="Flask, Jinja and Creative Tim.. working together!",
         login=False,
     )
+
+
+@main_bp.route("/mood/<mood>", methods=["GET"])
+def captions_on_moods(mood):
+    if mood not in DEFAULT_MOODS:
+        return render_template("errors/404.html", error_message=f"Mood {mood} not Found!"), 404
+    if request.method == "GET":
+        resp = mongo.get_captions(
+            general_mood=mood
+        )
+        return render_template("main/index.html", captions=resp["captions"],keywords=resp["keywords"], login=False)
+
+
+@main_bp.route("/author/<author>", methods=["GET"])
+def captions_on_author(author):
+    if request.method == "GET":
+        resp = mongo.get_captions_based_on_author(
+            author
+        )
+        return render_template("main/index.html", captions=resp["captions"], keywords=resp["keywords"], login=False)
+
+
+# @app.route('/sitemap.xml')
+# def site_map():
+#   articles = sorted(flatpages, key=lambda item:item.meta['published'], reverse=False)
+#   return render_template('sitemap_template.xml', articles=articles, base_url=“https://buildstaticwebsites.com”)

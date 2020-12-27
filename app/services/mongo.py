@@ -11,7 +11,7 @@ import random
 from flask import current_app
 from pymongo import MongoClient
 
-DEFAULT_MOODS = [
+DEFAULT_MOODS: list = [
     "love",
     "funny",
     "happy",
@@ -23,7 +23,7 @@ DEFAULT_MOODS = [
     "art",
 ]
 
-DEFAULT_OBJECTS = ["mountain", "sea", "beach", "girl", "boy", "car", "coffee"]
+DEFAULT_OBJECTS: list = ["mountain", "sea", "beach", "girl", "boy", "car", "coffee"]
 
 # Caption limits
 NUMBER_OF_CAPTIONS = 5
@@ -66,8 +66,8 @@ class MongoManager:
 
         return wrapper
 
-    def get_captions_from_response(self, response: Document) -> list:
-        """Get random samples from mongoengine response."""
+    def get_captions_from_response(self, response: Document) -> dict:
+        """Get random samples from mongoengine response, returns captions and keywords."""
         if len(response) >= NUMBER_OF_CAPTIONS:
             number_of_samples = NUMBER_OF_CAPTIONS
         else:
@@ -80,7 +80,17 @@ class MongoManager:
             captions.append({sample.author: sample.caption})
         if not captions:
             raise ValueError()
-        return captions
+        
+        keywords = self.get_keywords_from_response(random_samples)
+        return {"captions":captions, "keywords": keywords}
+
+    def get_keywords_from_response(self, samples: list) -> str:
+        """Generates keywords from samples."""
+        keywords = []
+        for sample in samples:
+            keywords.append(sample.author)
+            keywords.extend(sample.moods)
+        return ",".join(keywords)
 
     @init_db
     def get_captions(
@@ -129,6 +139,14 @@ class MongoManager:
             except ValueError:
                 general_mood = random.choice(DEFAULT_MOODS)
                 return self.get_caption(general_mood)
+
+    @init_db
+    def get_captions_based_on_author(
+        self, author: str = None
+    ) -> list:
+        """Get captions from mongo based on author name."""
+        resp = Captions.objects(author=author)
+        return self.get_captions_from_response(resp)
 
     @init_db
     def get_users(self, id: str) -> list:
