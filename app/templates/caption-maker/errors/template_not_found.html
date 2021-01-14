@@ -2,17 +2,21 @@
 
 
 {% block app_content %}
-    <div class="tim-title">
+    <!-- <div class="tim-title">
         <h3>404</h3>
-    </div>
+    </div> -->
 
     <div id="notifications">
     <div class="alert alert-danger">
-         <div class="container">
-             <b>Template was not found</b> The administrator has been notified. Sorry for the inconvenience!
+        <div class="container">
+            <center><h3> Template not found! </h3></center>
+                {% if error_message %}
+                    <center><h4> {{error_message}} </h4></center>
+                {%  else %}
+                    <center><h4>An unexpected error has occurred</h4></center>
+                {%  endif %}
         </div>
-    <p><a href="{{ url_for('main.index') }}">{{ 'Back' }}</a></p>
-    </div>
+    <center><p><a href="{{ url_for('main.index') }}">{{ 'Homepage' }}</a></p></center>
     <div class="clearfix"></div>
 </div><!--  end notifications -->
 

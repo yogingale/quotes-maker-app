@@ -2,17 +2,21 @@
 
 
 {% block app_content %}
-    <div class="tim-title">
+    <!-- <div class="tim-title">
         <h3>404</h3>
-    </div>
+    </div> -->
 
     <div id="notifications">
         <div class="alert alert-danger">
             <div class="container">
-                <b>An unexpected error has occurred</b> The administrator has been notified. Sorry for the
-                inconvenience!
+                <center><h3> 500: SERVER ERROR </h3></center>
+                    {% if error_message %}
+                        <center><h4> {{error_message}} </h4></center>
+                    {%  else %}
+                        <center><h4>An unexpected error has occurred</h4></center>
+                    {%  endif %}
             </div>
-            <p><a href="{{ url_for('main.index') }}">{{ 'Back' }}</a></p>
+        <center><p><a href="{{ url_for('main.index') }}">{{ 'Homepage' }}</a></p></center>
         </div>
         <div class="clearfix"></div>
     </div><!--  end notifications -->

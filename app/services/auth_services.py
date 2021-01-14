@@ -3,7 +3,9 @@ from app.models import User
 from flask_login import current_user
 from flask import current_app
 from werkzeug.exceptions import Unauthorized
-from app.services.db_services import init_db
+from app.services.mongo import MongoManager
+
+mongo = MongoManager.quotes_maker()
 
 
 @login_manager.user_loader
@@ -15,15 +17,10 @@ def load_user(id):
     """
 
     current_app.logger.info(f"load_user: {id}")
-    client = init_db()
-    db = client.caption_maker
-    users = db.users
-    response = users.find({"email": id})
-    for user in response:
-        if user["email"] == id:
-            return User(
-                user["username"], user["password"], user["roles"], user["email"], user
-            )
+    users = mongo.get_users(id)
+    for user in users:
+        if user.email == id:
+            return User(user.username, user.password, user.roles, user.email)
 
     return None
 
@@ -35,16 +32,12 @@ def create_user(data):
     :return: return User status
     """
     current_app.logger.info(f"load_user: {id}")
-    client = init_db()
-    db = client.caption_maker
-    users = db.users
-    data = {
-        "username": data["username"],
-        "password": data["password"],
-        "email": data["email"],
-        "roles": ["user"],
-    }
-    users.insert_one(data)
+    mongo.create_user(
+        username=data["username"],
+        password=data["password"],
+        email=data["email"],
+        roles="user",
+    )
 
     return True
 
