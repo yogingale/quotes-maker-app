@@ -19,7 +19,10 @@ class Rekognition(AWS):
     client: resource = field(init=False)
 
     def __post_init__(self):
-        self.client = boto3.client("rekognition", region_name=self.region_name,)
+        self.client = boto3.client(
+            "rekognition",
+            region_name=self.region_name,
+        )
 
     def detect_labels(self, encoded_image: str) -> dict:
         """Detect labels AKA objects from encoded image."""
