@@ -1,5 +1,13 @@
 from app.main import main_bp
-from flask import current_app, request, render_template, session, redirect, url_for
+from flask import (
+    current_app,
+    request,
+    render_template,
+    session,
+    redirect,
+    url_for,
+    make_response,
+)
 from flask_login import current_user, login_required
 
 from app.services.mongo import MongoManager, DEFAULT_MOODS
@@ -7,6 +15,7 @@ from app.services.aws import Rekognition
 import base64
 import random
 import boto3
+from datetime import datetime
 
 # User limits
 NON_LOGGED_IN_USER_LIMIT = 15
@@ -62,7 +71,9 @@ def upload():
         resp = mongo.get_captions(
             general_mood=general_mood, moods=moods, objects=sorted_objects
         )
-        return render_template("main/index.html", captions=resp["captions"], login=False)
+        return render_template(
+            "main/index.html", captions=resp["captions"], login=False
+        )
 
 
 @main_bp.route("/upload-login", methods=["POST"])
@@ -80,7 +91,12 @@ def upload_login():
         resp = mongo.get_captions(
             general_mood=general_mood, moods=moods, objects=sorted_objects
         )
-        return render_template("main/index.html", captions=resp["captions"], keywords=resp["keywords"], login=True)
+        return render_template(
+            "main/index.html",
+            captions=resp["captions"],
+            keywords=resp["keywords"],
+            login=True,
+        )
 
 
 @main_bp.route("/", methods=["GET"])
@@ -109,24 +125,51 @@ def index():
 @main_bp.route("/mood/<mood>", methods=["GET"])
 def captions_on_moods(mood):
     if mood not in DEFAULT_MOODS:
-        return render_template("errors/404.html", error_message=f"Mood {mood} not Found!"), 404
-    if request.method == "GET":
-        resp = mongo.get_captions(
-            general_mood=mood
+        return (
+            render_template("errors/404.html", error_message=f"Mood {mood} not Found!"),
+            404,
         )
-        return render_template("main/index.html", captions=resp["captions"],keywords=resp["keywords"], login=False)
+    if request.method == "GET":
+        resp = mongo.get_captions(general_mood=mood)
+        return render_template(
+            "main/index.html",
+            captions=resp["captions"],
+            keywords=resp["keywords"],
+            login=False,
+        )
 
 
 @main_bp.route("/author/<author>", methods=["GET"])
 def captions_on_author(author):
     if request.method == "GET":
-        resp = mongo.get_captions_based_on_author(
-            author
+        resp = mongo.get_captions_based_on_author(author)
+        return render_template(
+            "main/index.html",
+            captions=resp["captions"],
+            keywords=resp["keywords"],
+            login=False,
         )
-        return render_template("main/index.html", captions=resp["captions"], keywords=resp["keywords"], login=False)
 
 
-# @app.route('/sitemap.xml')
-# def site_map():
-#   articles = sorted(flatpages, key=lambda item:item.meta['published'], reverse=False)
-#   return render_template('sitemap_template.xml', articles=articles, base_url=“https://buildstaticwebsites.com”)
+@main_bp.route("/sitemap.xml")
+def site_map():
+    moods = DEFAULT_MOODS
+    page_ids = range(1, 11)
+    lastmod = datetime.today().strftime("%Y-%m-%d")
+
+    pages = [{"mood": "love", "pageID": 1, "modified": "2020-12-27"}]
+
+    pages = []
+    for mood in moods:
+        for page_id in page_ids:
+            pages.append({"mood": mood, "pageID": page_id, "modified": lastmod})
+
+    print(pages)
+
+    sitemap_xml = render_template(
+        "sitemap_template.xml", pages=pages, base_url="https://quotes-maker.com",
+    )
+    response = make_response(sitemap_xml)
+    response.headers["Content-Type"] = "application/xml"
+
+    return response

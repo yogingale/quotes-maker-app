@@ -80,9 +80,9 @@ class MongoManager:
             captions.append({sample.author: sample.caption})
         if not captions:
             raise ValueError()
-        
+
         keywords = self.get_keywords_from_response(random_samples)
-        return {"captions":captions, "keywords": keywords}
+        return {"captions": captions, "keywords": keywords}
 
     def get_keywords_from_response(self, samples: list) -> str:
         """Generates keywords from samples."""
@@ -141,9 +141,7 @@ class MongoManager:
                 return self.get_caption(general_mood)
 
     @init_db
-    def get_captions_based_on_author(
-        self, author: str = None
-    ) -> list:
+    def get_captions_based_on_author(self, author: str = None) -> list:
         """Get captions from mongo based on author name."""
         resp = Captions.objects(author=author)
         return self.get_captions_from_response(resp)

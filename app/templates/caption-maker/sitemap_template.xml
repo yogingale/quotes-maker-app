@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>{{ base_url }}</loc>
     <lastmod>2020-12-27</lastmod>
     <changefreq>weekly</changefreq>
   </url>
-  {%- for article in articles %}
+  {%- for page in pages %}
   <url>
-    <loc>{{ base_url }}/{{ article.category }}/{{ article.pageID }}</loc>
-    <xhtml:link rel="amphtml" href="{{ base_url }}/{{ article.category }}/{{ article.pageID }}/amp" />
-    <lastmod>{{ article.modified }}</lastmod>
+    <loc>{{ base_url }}/{{ page["mood"] }}/{{ page["pageID"] }}</loc>
+    <lastmod>{{ page["modified"] }}</lastmod>
     <changefreq>weekly</changefreq>
   </url>
   {%- endfor -%}
-</Urlset>
+</urlset>
