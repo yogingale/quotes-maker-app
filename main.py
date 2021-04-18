@@ -1,15 +1,15 @@
-import os
-
-from app import create_app
-from config import Config
-
-app = create_app(config_class=Config)
-app.config.from_object(os.environ.get("APP_SETTINGS"))
+from flask import Flask, render_template
+app = Flask(__name__)
 
 
-if __name__ == "__main__":
-    app.jinja_env.auto_reload = True
-    app.config["TEMPLATES_AUTO_RELOAD"] = True
-    if app.config["APP_STAGE"] == "local":
-        app.run(debug=True)
-    app.run()
+@app.route("/")
+def template():
+    return render_template('index.html')
+
+@app.route("/example")
+def template_test():
+    return render_template('index_example.html', my_string="Wheeeee!", my_list=[0,1,2,3,4,5])
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
