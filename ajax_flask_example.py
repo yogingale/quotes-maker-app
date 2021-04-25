@@ -5,41 +5,43 @@ import threading
 
 app = Flask(__name__)
 
-running = False # to control loop in thread
-value = 0       
+running = False  # to control loop in thread
+value = 0
+
 
 def rpi_function():
     global value
 
-    print('start of thread')
-    while running: # global variable to stop loop  
+    print("start of thread")
+    while running:  # global variable to stop loop
         value += 1
         time.sleep(1)
-    print('stop of thread')
+    print("stop of thread")
 
 
-@app.route('/')
-@app.route('/<device>/<action>')
+@app.route("/")
+@app.route("/<device>/<action>")
 def index(device=None, action=None):
     global running
     global value
 
     if device:
-        if action == 'on':
+        if action == "on":
             if not running:
-                print('start')
+                print("start")
                 running = True
                 threading.Thread(target=rpi_function).start()
             else:
-                print('already running')
-        elif action == 'off':
+                print("already running")
+        elif action == "off":
             if running:
-                print('stop')
+                print("stop")
                 running = False  # it should stop thread
             else:
-                print('not running')
+                print("not running")
 
-    return render_template_string('''<!DOCTYPE html>
+    return render_template_string(
+        """<!DOCTYPE html>
    <head>
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
    </head>
@@ -64,13 +66,15 @@ def index(device=None, action=None):
         </script>
    </body>
 </html>
-''')
+"""
+    )
 
-@app.route('/update', methods=['POST'])
+
+@app.route("/update", methods=["POST"])
 def update():
-    return jsonify({
-        'value': value,
-        'time': datetime.datetime.now().strftime("%H:%M:%S"),
-    })
+    return jsonify(
+        {"value": value, "time": datetime.datetime.now().strftime("%H:%M:%S"),}
+    )
 
-app.run() #debug=True
+
+app.run()  # debug=True

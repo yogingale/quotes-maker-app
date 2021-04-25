@@ -52,10 +52,7 @@ def process_request(request):
         sorted_objects = [label["Name"].lower() for label in objects["Labels"]][:4]
 
     current_app.logger.info(
-        "general_mood: %s, moods: %s, objects: %s",
-        general_mood,
-        moods,
-        sorted_objects,
+        "general_mood: %s, moods: %s, objects: %s", general_mood, moods, sorted_objects,
     )
     return general_mood, moods, sorted_objects
 
@@ -170,9 +167,7 @@ def site_map():
     print(pages)
 
     sitemap_xml = render_template(
-        "sitemap_template.xml",
-        pages=pages,
-        base_url="https://quotes-maker.com",
+        "sitemap_template.xml", pages=pages, base_url="https://quotes-maker.com",
     )
     response = make_response(sitemap_xml)
     response.headers["Content-Type"] = "application/xml"

@@ -138,10 +138,7 @@ def google_login():
     base_url = urlparse(request.base_url)._replace(path="").geturl()
     redirect_uri = f"{base_url}/auth/google/auth"
     session = OAuth2Session(
-        CLIENT_ID,
-        CLIENT_SECRET,
-        scope=AUTHORIZATION_SCOPE,
-        redirect_uri=redirect_uri,
+        CLIENT_ID, CLIENT_SECRET, scope=AUTHORIZATION_SCOPE, redirect_uri=redirect_uri,
     )
 
     uri, state = session.create_authorization_url(AUTHORIZATION_URL)

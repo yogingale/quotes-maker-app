@@ -21,6 +21,11 @@ CDN - Cloudflare
 
 ### Setup and Install
 
+#### Prerequisite
+
+Set env var `APP_STAGE` as local, dev or prod based on environment.
+
+#### Steps
   1) git clone
   2) python3 -m venv .venv
   3) source .venv/bin/activate
