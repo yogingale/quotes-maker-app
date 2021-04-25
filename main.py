@@ -7,6 +7,7 @@ from flask import (
     session,
     redirect,
     url_for,
+    abort,
     make_response,
 )
 from flask_login import current_user, login_required
@@ -20,59 +21,47 @@ from datetime import datetime
 
 import os
 
-app = Flask(__name__)
+from config import Config, create_app
 
-
-app_stage = os.environ["APP_STAGE"]
-
-# TODO: Implement this using switch-case from python 3.10
-if app_stage == "local" or app_stage == "dev":
-    # Using a development configuration
-    app.config.from_object("config.DevConfig")
-
-if app_stage == "prod":
-    # Using a production configuration
-    app.config.from_object("config.ProdConfig")
-
+app = create_app(config_class=Config)
 
 # User limits
-NON_LOGGED_IN_USER_LIMIT = 15
-LOGGED_IN_USER_LIMIT = 35
-
-mongo = MongoManager.quotes_maker()
+# NON_LOGGED_IN_USER_LIMIT = 15
+# LOGGED_IN_USER_LIMIT = 35
 
 
-# @main_bp.before_app_request
-# def before_request():
-#     current_app.logger.debug("in before app request ")
+@app.errorhandler(404)
+def page_not_found(e):
+    # note that we set the 404 status explicitly
+    return render_template("errors/404.html"), 404
 
 
-def process_request(request):
-    """Process flask request and extract attributes for mongo query."""
-    moods = request.form.to_dict()
-    sorted_moods = [
-        k
-        for k, v in sorted(moods.items(), key=lambda item: int(item[1]), reverse=True)
-        if int(v) > 0
-    ]
-    try:
-        general_mood = sorted_moods[0]
-        moods = sorted_moods[1:6]
-    except IndexError:
-        general_mood = moods = None
+# def process_image_request(request):
+#     """Process flask request and extract attributes for mongo query."""
+#     moods = request.form.to_dict()
+#     sorted_moods = [
+#         k
+#         for k, v in sorted(moods.items(), key=lambda item: int(item[1]), reverse=True)
+#         if int(v) > 0
+#     ]
+#     try:
+#         general_mood = sorted_moods[0]
+#         moods = sorted_moods[1:6]
+#     except IndexError:
+#         general_mood = moods = None
 
-    sorted_objects = None
-    if request.files["photo"]:
-        image = request.files["photo"]
-        base64_image = base64.b64encode(image.read())
-        base_64_binary = base64.decodebytes(base64_image)
-        objects = Rekognition().detect_labels(base_64_binary)
-        sorted_objects = [label["Name"].lower() for label in objects["Labels"]][:4]
+#     sorted_objects = None
+#     if request.files["photo"]:
+#         image = request.files["photo"]
+#         base64_image = base64.b64encode(image.read())
+#         base_64_binary = base64.decodebytes(base64_image)
+#         objects = Rekognition().detect_labels(base_64_binary)
+#         sorted_objects = [label["Name"].lower() for label in objects["Labels"]][:4]
 
-    current_app.logger.info(
-        "general_mood: %s, moods: %s, objects: %s", general_mood, moods, sorted_objects,
-    )
-    return general_mood, moods, sorted_objects
+#     current_app.logger.info(
+#         "general_mood: %s, moods: %s, objects: %s", general_mood, moods, sorted_objects,
+#     )
+#     return general_mood, moods, sorted_objects
 
 
 # @main_bp.route("/upload", methods=["POST"])
@@ -85,8 +74,8 @@ def process_request(request):
 #                 "main/index.html",
 #                 homepage_message="You have crossed the usage limit. Please signup to get more captions.",
 #             )
-#         general_mood, moods, sorted_objects = process_request(request)
-#         resp = mongo.get_captions(
+#         general_mood, moods, sorted_objects = process_image_request(request)
+#         resp = mongo.get_quotes(
 #             general_mood=general_mood, moods=moods, objects=sorted_objects
 #         )
 #         return render_template(
@@ -105,8 +94,8 @@ def process_request(request):
 #                 homepage_message="You have crossed the usage limit. Please come back tomorrow.",
 #             )
 
-#         general_mood, moods, sorted_objects = process_request(request)
-#         resp = mongo.get_captions(
+#         general_mood, moods, sorted_objects = process_image_request(request)
+#         resp = mongo.get_quotes(
 #             general_mood=general_mood, moods=moods, objects=sorted_objects
 #         )
 #         return render_template(
@@ -148,7 +137,7 @@ def process_request(request):
 #             404,
 #         )
 #     if request.method == "GET":
-#         resp = mongo.get_captions(general_mood=mood)
+#         resp = mongo.get_quotes(general_mood=mood)
 #         return render_template(
 #             "main/index.html",
 #             captions=resp["captions"],
@@ -160,7 +149,7 @@ def process_request(request):
 # @main_bp.route("/author/<author>", methods=["GET"])
 # def captions_on_author(author):
 #     if request.method == "GET":
-#         resp = mongo.get_captions_based_on_author(author)
+#         resp = mongo.get_quotes_based_on_author(author)
 #         return render_template(
 #             "main/index.html",
 #             captions=resp["captions"],
@@ -220,25 +209,19 @@ def process_request(request):
 
 @app.route("/topic/<topic>")
 def topic(topic):
+    mongo = MongoManager.quotes_maker()
+
     if topic not in DEFAULT_TOPICS:
-        return (
-            render_template(
-                "errors/404.html", error_message=f"Topic {topic} not Found!"
-            ),
-            404,
-        )
+        return abort(404)
     if request.method == "GET":
-        resp = mongo.get_captions(general_mood=topic)
-        return render_template(
-            "index.html", quotes=resp["captions"], keywords=resp["keywords"]
-        )
+        resp = mongo.get_quotes(general_mood=topic)
+        return render_template("index.html", quotes=resp["quotes"])
 
 
-@app.route("/example")
-def template_test():
-    return render_template(
-        "index_example.html", my_string="Wheeeee!", my_list=[0, 1, 2, 3, 4, 5]
-    )
+@app.route("/", methods=["GET"])
+@app.route("/index", methods=["GET"])
+def index():
+    return render_template("index.html",)
 
 
 if __name__ == "__main__":

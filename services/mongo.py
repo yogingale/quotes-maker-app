@@ -25,8 +25,8 @@ DEFAULT_TOPICS: list = [
 
 DEFAULT_OBJECTS: list = ["mountain", "sea", "beach", "girl", "boy", "car", "coffee"]
 
-# Caption limits
-NUMBER_OF_CAPTIONS = 5
+# Quotes limits
+NUMBER_OF_QUOTES = 10
 
 
 class Captions(Document):
@@ -66,34 +66,25 @@ class MongoManager:
 
         return wrapper
 
-    def get_captions_from_response(self, response: Document) -> dict:
-        """Get random samples from mongoengine response, returns captions and keywords."""
-        if len(response) >= NUMBER_OF_CAPTIONS:
-            number_of_samples = NUMBER_OF_CAPTIONS
+    def get_quotes_from_response(self, response: Document) -> dict:
+        """Get random samples from mongoengine response, returns quotes and keywords."""
+        if len(response) >= NUMBER_OF_QUOTES:
+            number_of_samples = NUMBER_OF_QUOTES
         else:
             number_of_samples = len(response)
         random_samples = random.sample(set(response), number_of_samples)
-        captions = []
-        current_app.logger.info("Final captions:")
+        quotes = []
+        current_app.logger.info("Final quotes:")
         for sample in random_samples:
             current_app.logger.info(sample.caption)
-            captions.append({sample.author: sample.caption})
-        if not captions:
+            quotes.append(sample)
+        if not quotes:
             raise ValueError()
 
-        keywords = self.get_keywords_from_response(random_samples)
-        return {"captions": captions, "keywords": keywords}
-
-    def get_keywords_from_response(self, samples: list) -> str:
-        """Generates keywords from samples."""
-        keywords = []
-        for sample in samples:
-            keywords.append(sample.author)
-            keywords.extend(sample.moods)
-        return ",".join(keywords)
+        return {"quotes": quotes}
 
     @init_db
-    def get_captions(
+    def get_quotes(
         self, general_mood: str = None, moods: list = None, objects: list = None
     ) -> list:
         """Get captions from mongo based on given parameters."""
@@ -104,7 +95,7 @@ class MongoManager:
                 objects = [random.choice(DEFAULT_OBJECTS)]
             resp = Captions.objects(moods__in=moods, objects___in=objects)
             try:
-                return self.get_captions_from_response(resp)
+                return self.get_quotes_from_response(resp)
             except ValueError:
                 general_mood = random.choice(DEFAULT_TOPICS)
                 return self.get_caption(general_mood, objects, moods)
@@ -114,37 +105,37 @@ class MongoManager:
                 general_mood=general_mood, moods__in=moods, objects___in=objects
             )
             try:
-                return self.get_captions_from_response(resp)
+                return self.get_quotes_from_response(resp)
             except ValueError:
                 return self.get_caption(general_mood, objects)
 
         if moods and not objects:
             resp = Captions.objects(general_mood=general_mood, moods__in=moods)
             try:
-                return self.get_captions_from_response(resp)
+                return self.get_quotes_from_response(resp)
             except ValueError:
                 return self.get_caption(general_mood)
 
         if not moods and objects:
             resp = Captions.objects(general_mood=general_mood, objects___in=objects)
             try:
-                return self.get_captions_from_response(resp)
+                return self.get_quotes_from_response(resp)
             except ValueError:
                 return self.get_caption(general_mood)
 
         if not moods and not objects:
             resp = Captions.objects(general_mood=general_mood)
             try:
-                return self.get_captions_from_response(resp)
+                return self.get_quotes_from_response(resp)
             except ValueError:
                 general_mood = random.choice(DEFAULT_TOPICS)
                 return self.get_caption(general_mood)
 
     @init_db
-    def get_captions_based_on_author(self, author: str = None) -> list:
+    def get_quotes_based_on_author(self, author: str = None) -> list:
         """Get captions from mongo based on author name."""
         resp = Captions.objects(author=author)
-        return self.get_captions_from_response(resp)
+        return self.get_quotes_from_response(resp)
 
     @init_db
     def get_users(self, id: str) -> list:
