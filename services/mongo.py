@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 
 from mongoengine import Document, connect
 from mongoengine.fields import (
+    IntField,
     ListField,
     StringField,
 )
@@ -36,7 +37,7 @@ class Captions(Document):
     general_mood = StringField(max_length=50)
     moods = ListField(StringField(max_length=50))
     objects_ = ListField(StringField(max_length=50))
-    tags = ListField(StringField(max_length=30))
+    likes = IntField()
 
 
 class Users(Document):
@@ -65,6 +66,11 @@ class MongoManager:
             return func(*args, **kwargs)
 
         return wrapper
+
+    @init_db
+    def create_user(self, **kwargs) -> list:
+        """Create User."""
+        return Users(**kwargs).save()
 
     def get_quotes_from_response(self, response: Document) -> dict:
         """Get random samples from mongoengine response, returns quotes and keywords."""
@@ -138,11 +144,14 @@ class MongoManager:
         return self.get_quotes_from_response(resp)
 
     @init_db
-    def get_users(self, id: str) -> list:
+    def get_users(self, email: str) -> list:
         """Get Users details matching email address."""
-        return Users.objects(email=id)
+        return Users.objects(email=email)
 
     @init_db
-    def create_user(self, **kwargs) -> list:
-        """Create User."""
-        return Users(**kwargs).save()
+    def like_quote(self, id: str) -> int:
+        """Increment the like by 1."""
+        Captions.objects(id=id).update_one(inc__likes=1)
+        likes_count = Captions.objects(id=id)[0].likes
+
+        return likes_count

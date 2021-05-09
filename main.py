@@ -9,6 +9,7 @@ from flask import (
     url_for,
     abort,
     make_response,
+    jsonify,
 )
 from flask_login import current_user, login_required
 
@@ -216,6 +217,16 @@ def topic(topic):
     if request.method == "GET":
         resp = mongo.get_quotes(general_mood=topic)
         return render_template("index.html", quotes=resp["quotes"])
+
+
+@app.route("/like", methods=["POST"])
+def like():
+    like_data = request.form.to_dict()["data"]
+    print(like_data)
+    id, count = like_data.split("_")
+
+    count = MongoManager.quotes_maker().like_quote(id)
+    return jsonify({"result": "success", "like_count": count})
 
 
 @app.route("/", methods=["GET"])

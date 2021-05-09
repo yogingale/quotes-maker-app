@@ -45,12 +45,15 @@
                           <p class="mb-3">- {{quote["author"]}}</p>
                       <div class="meta-wrap">
                         <p class="meta">
-                        <a href="#" class="reply">Like</a>
-                        <span>69 <i class="icon-thumb_up mr-2"></i></span>
+                          <button class="like like-button" id="{{ quote.id }}_{{ quote.likes }}">
+                            Like {{quote["likes"]}}
+                          </button>
+                          <i class="icon-thumb_up mr-2"></i>
                         </p>
                       </div>
                     <div class="tag-widget post-tag-container mb-5 mt-5">
                         <div class="tagcloud">
+                          <a href="#" class="tag-cloud-link">{{quote["general_mood"]}}</a>
                           {% for tag in quote["moods"] %}
                             <a href="#" class="tag-cloud-link">{{tag}}</a>
                           {% endfor %}
