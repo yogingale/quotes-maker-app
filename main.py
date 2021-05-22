@@ -215,7 +215,7 @@ def topic(topic):
     if topic not in DEFAULT_TOPICS:
         return abort(404)
     if request.method == "GET":
-        resp = mongo.get_quotes(general_mood=topic)
+        resp = mongo.get_quotes(general_mood=topic, order_by_likes=True)
         return render_template("index.html", quotes=resp["quotes"])
 
 
@@ -234,6 +234,12 @@ def like():
 def index():
     return render_template("index.html",)
 
+
+@app.route("/test", methods=["GET"])
+def test():
+    mongo = MongoManager.quotes_maker()
+    mongo.get_quotes(general_mood="funny", order_by_likes=True)
+    return jsonify({"result": "success", "like_count": "count"})
 
 if __name__ == "__main__":
     app.run(debug=True)

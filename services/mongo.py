@@ -74,68 +74,58 @@ class MongoManager:
 
     def get_quotes_from_response(self, response: Document) -> dict:
         """Get random samples from mongoengine response, returns quotes and keywords."""
-        if len(response) >= NUMBER_OF_QUOTES:
-            number_of_samples = NUMBER_OF_QUOTES
-        else:
-            number_of_samples = len(response)
+        current_app.logger.info("Total %s results received, slicing the first %s results.",len(response), NUMBER_OF_QUOTES)
+        response = response[:NUMBER_OF_QUOTES]
+        number_of_samples = len(response)
         random_samples = random.sample(set(response), number_of_samples)
+
         quotes = []
         current_app.logger.info("Final quotes:")
         for sample in random_samples:
-            current_app.logger.info(sample.caption)
+            current_app.logger.info("quote: %s",sample.caption)
+            current_app.logger.info("topic: %s",sample.general_mood)
+            current_app.logger.info("moods: %s",sample.moods)
+            current_app.logger.info("objects: %s",sample.objects_)
+            current_app.logger.info("likes: %s",sample.likes)
+            current_app.logger.info("="*50)
             quotes.append(sample)
         if not quotes:
-            raise ValueError()
+            raise ValueError("Quotes not found.")
 
         return {"quotes": quotes}
 
     @init_db
     def get_quotes(
-        self, general_mood: str = None, moods: list = None, objects: list = None
+        self, general_mood: str = None, moods: list = None, objects: list = None, order_by_likes: bool = False
     ) -> list:
         """Get captions from mongo based on given parameters."""
+        kwargs = {}
+        if general_mood:
+            kwargs["general_mood"] = general_mood
+        if moods:
+            kwargs["moods__in"] = moods
+        if objects:
+            kwargs["objects___in"] = objects
+        
         if not general_mood:
-            if not moods:
-                moods = [random.choice(DEFAULT_TOPICS)]
-            if not objects:
-                objects = [random.choice(DEFAULT_OBJECTS)]
-            resp = Captions.objects(moods__in=moods, objects___in=objects)
-            try:
-                return self.get_quotes_from_response(resp)
-            except ValueError:
-                general_mood = random.choice(DEFAULT_TOPICS)
-                return self.get_caption(general_mood, objects, moods)
+            if not kwargs.get("moods__in"):
+                kwargs["moods__in"] = [random.choice(DEFAULT_TOPICS)]
 
-        if moods and objects:
-            resp = Captions.objects(
-                general_mood=general_mood, moods__in=moods, objects___in=objects
-            )
-            try:
-                return self.get_quotes_from_response(resp)
-            except ValueError:
-                return self.get_caption(general_mood, objects)
+        # Keeping objects in search decreases quality for quotes
+        # if not kwargs.get("objects___in"):
+        #     kwargs["objects___in"] = [random.choice(DEFAULT_OBJECTS)]
 
-        if moods and not objects:
-            resp = Captions.objects(general_mood=general_mood, moods__in=moods)
-            try:
-                return self.get_quotes_from_response(resp)
-            except ValueError:
-                return self.get_caption(general_mood)
+        current_app.logger.info("Parameters to search quotes: %s", kwargs)
 
-        if not moods and objects:
-            resp = Captions.objects(general_mood=general_mood, objects___in=objects)
-            try:
-                return self.get_quotes_from_response(resp)
-            except ValueError:
-                return self.get_caption(general_mood)
+        if order_by_likes:
+            resp = Captions.objects(**kwargs).order_by('-likes')
+        else:
+            resp = Captions.objects(**kwargs)
 
-        if not moods and not objects:
-            resp = Captions.objects(general_mood=general_mood)
-            try:
-                return self.get_quotes_from_response(resp)
-            except ValueError:
-                general_mood = random.choice(DEFAULT_TOPICS)
-                return self.get_caption(general_mood)
+        try:
+            return self.get_quotes_from_response(resp)
+        except ValueError:
+            return self.get_quotes(general_mood=random.choice(DEFAULT_TOPICS))
 
     @init_db
     def get_quotes_based_on_author(self, author: str = None) -> list:
