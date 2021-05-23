@@ -218,6 +218,14 @@ def topic(topic):
         resp = mongo.get_quotes(general_mood=topic, order_by_likes=True)
         return render_template("index.html", quotes=resp["quotes"])
 
+@app.route("/search/<mood>")
+def search_mood(mood):
+    mongo = MongoManager.quotes_maker()
+
+    if request.method == "GET":
+        resp = mongo.get_quotes(moods=[mood], order_by_likes=True)
+        return render_template("index.html", quotes=resp["quotes"])
+
 
 @app.route("/like", methods=["POST"])
 def like():
