@@ -41,20 +41,20 @@
                     <div class="blog-entry ftco-animate d-md-flex bg-light">
                         <!-- <a href="single.html" class="img img-2" style="background-image: url(static/images/image_1.jpg);"></a> -->
                         <div class="text text-2 pl-md-4">
-                          <h3 class="mb-2"><a href="single.html">"{{quote["caption"]}}"</a></h3>
-                          <p class="mb-3">- {{quote["author"]}}</p>
+                          <h3 class="mb-2"><a href="single.html">"{{quote.caption}}"</a></h3>
+                          <p class="mb-3">- {{quote.author}}</p>
                       <div class="meta-wrap">
                         <p class="meta">
                           <button class="like like-button" id="{{ quote.id }}_{{ quote.likes }}">
-                            Like {{quote["likes"]}}
+                            Like {{quote.likes}}
                           </button>
                           <i class="icon-thumb_up mr-2"></i>
                         </p>
                       </div>
                     <div class="tag-widget post-tag-container mb-5 mt-5">
                         <div class="tagcloud">
-                          <a href="/search/{{ quote['general_mood'] }}" class="tag-cloud-link">{{quote["general_mood"]}}</a>
-                          {% for tag in quote["moods"] %}
+                          <a href="/search/{{ quote['general_mood'] }}" class="tag-cloud-link">{{quote.general_mood}}</a>
+                          {% for tag in quote.moods %}
                             <a href="/search/{{ tag }}" class="tag-cloud-link">{{tag}}</a>
                           {% endfor %}
                         </div>
@@ -77,13 +77,16 @@
             <div class="col">
               <div class="block-27">
                 <ul>
-                  <li><a href="#">&lt;</a></li>
-                  <li class="active"><span>1</span></li>
-                  <li><a href="#">2</a></li>
-                  <li><a href="#">3</a></li>
-                  <li><a href="#">4</a></li>
-                  <li><a href="#">5</a></li>
-                  <li><a href="#">&gt;</a></li>
+                  <!-- {% for page in quotes.iter_pages() %}
+                    {{ page }} -->
+                    <li><a href="#">&lt;</a></li>
+                    <li class="active"><span>1</span></li>
+                    <li><a href="#">2</a></li>
+                    <li><a href="#">3</a></li>
+                    <li><a href="#">4</a></li>
+                    <li><a href="#">5</a></li>
+                    <li><a href="#">&gt;</a></li>
+                  <!-- {% endfor %} -->
                 </ul>
               </div>
             </div>

@@ -12,6 +12,7 @@ from flask import (
     jsonify,
 )
 from flask_login import current_user, login_required
+from flask_mongoengine import MongoEngine
 
 from services.mongo import MongoManager, DEFAULT_TOPICS
 from services.aws import Rekognition
@@ -25,6 +26,8 @@ import os
 from config import Config, create_app
 
 app = create_app(config_class=Config)
+db = MongoEngine(app)
+
 
 # User limits
 # NON_LOGGED_IN_USER_LIMIT = 15
@@ -215,8 +218,8 @@ def topic(topic):
     if topic not in DEFAULT_TOPICS:
         return abort(404)
     if request.method == "GET":
-        resp = mongo.get_quotes(general_mood=topic, order_by_likes=True)
-        return render_template("index.html", quotes=resp["quotes"])
+        quotes = mongo.get_quotes(general_mood=topic, order_by_likes=True)
+        return render_template("index.html", quotes=quotes)
 
 @app.route("/search/<mood>")
 def search_mood(mood):

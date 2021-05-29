@@ -27,7 +27,7 @@ DEFAULT_TOPICS: list = [
 DEFAULT_OBJECTS: list = ["mountain", "sea", "beach", "girl", "boy", "car", "coffee"]
 
 # Quotes limits
-NUMBER_OF_QUOTES = 10
+NUMBER_OF_QUOTES = 20
 
 
 class Captions(Document):
@@ -58,16 +58,6 @@ class MongoManager:
     def quotes_maker(cls):
         return cls("caption_maker")
 
-    def init_db(func):
-        """Initialize DB."""
-
-        def wrapper(*args, **kwargs):
-            connect("caption_maker", host=current_app.config["MONGO_DB_URI"])
-            return func(*args, **kwargs)
-
-        return wrapper
-
-    @init_db
     def create_user(self, **kwargs) -> list:
         """Create User."""
         return Users(**kwargs).save()
@@ -79,7 +69,6 @@ class MongoManager:
         number_of_samples = len(response)
         random_samples = random.sample(set(response), number_of_samples)
 
-        quotes = []
         current_app.logger.info("Final quotes:")
         for sample in random_samples:
             current_app.logger.info("quote: %s",sample.caption)
@@ -88,13 +77,11 @@ class MongoManager:
             current_app.logger.info("objects: %s",sample.objects_)
             current_app.logger.info("likes: %s",sample.likes)
             current_app.logger.info("="*50)
-            quotes.append(sample)
-        if not quotes:
+        if not random_samples:
             raise ValueError("Quotes not found.")
 
-        return {"quotes": quotes}
+        return random_samples.paginate(page=1, per_page=10)
 
-    @init_db
     def get_quotes(
         self, general_mood: str = None, moods: list = None, objects: list = None, order_by_likes: bool = False
     ) -> list:
@@ -127,18 +114,15 @@ class MongoManager:
         except ValueError:
             return self.get_quotes(general_mood=random.choice(DEFAULT_TOPICS))
 
-    @init_db
     def get_quotes_based_on_author(self, author: str = None) -> list:
         """Get captions from mongo based on author name."""
         resp = Captions.objects(author=author)
         return self.get_quotes_from_response(resp)
 
-    @init_db
     def get_users(self, email: str) -> list:
         """Get Users details matching email address."""
         return Users.objects(email=email)
 
-    @init_db
     def like_quote(self, id: str) -> int:
         """Increment the like by 1."""
         Captions.objects(id=id).update_one(inc__likes=1)
