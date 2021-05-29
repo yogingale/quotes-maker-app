@@ -27,6 +27,10 @@ class ProdConfig(Config):
     MONGO_DB_NAME = urllib.parse.quote_plus(os.environ.get("MONGO_DB_NAME"))
     MONGO_DB_URI = f"mongodb+srv://caption-maker:{MONGO_DB_PASSWORD}@cluster0-9y16x.mongodb.net/{MONGO_DB_NAME}?retryWrites=true&w=majority"
 
+    MONGODB_SETTINGS = {
+        "DB":MONGO_DB_NAME,
+        'HOST': MONGO_DB_URI
+    }
 
 class DevConfig(Config):
     DEBUG = True
@@ -37,6 +41,10 @@ class DevConfig(Config):
     MONGO_DB_NAME = urllib.parse.quote_plus(os.environ.get("MONGO_DB_NAME"))
     MONGO_DB_URI = f"mongodb+srv://caption-maker:{MONGO_DB_PASSWORD}@cluster0-9y16x.mongodb.net/{MONGO_DB_NAME}?retryWrites=true&w=majority"
 
+    MONGODB_SETTINGS = {
+        "DB":MONGO_DB_NAME,
+        'HOST': MONGO_DB_URI
+    }
 
 def create_app(config_class=None):
     app = Flask(

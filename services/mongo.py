@@ -2,7 +2,7 @@ import os
 import urllib
 from dataclasses import dataclass, field
 
-from mongoengine import Document, connect
+from flask_mongoengine import Document
 from mongoengine.fields import (
     IntField,
     ListField,
@@ -27,7 +27,7 @@ DEFAULT_TOPICS: list = [
 DEFAULT_OBJECTS: list = ["mountain", "sea", "beach", "girl", "boy", "car", "coffee"]
 
 # Quotes limits
-NUMBER_OF_QUOTES = 10
+NUMBER_OF_QUOTES = 20
 
 
 class Captions(Document):
@@ -58,45 +58,33 @@ class MongoManager:
     def quotes_maker(cls):
         return cls("caption_maker")
 
-    def init_db(func):
-        """Initialize DB."""
-
-        def wrapper(*args, **kwargs):
-            connect("caption_maker", host=current_app.config["MONGO_DB_URI"])
-            return func(*args, **kwargs)
-
-        return wrapper
-
-    @init_db
     def create_user(self, **kwargs) -> list:
         """Create User."""
         return Users(**kwargs).save()
 
-    def get_quotes_from_response(self, response: Document) -> dict:
+    def get_quotes_from_response(self, response: Document, page: int) -> list:
         """Get random samples from mongoengine response, returns quotes and keywords."""
         current_app.logger.info("Total %s results received, slicing the first %s results.",len(response), NUMBER_OF_QUOTES)
-        response = response[:NUMBER_OF_QUOTES]
-        number_of_samples = len(response)
-        random_samples = random.sample(set(response), number_of_samples)
+        # response = response[:NUMBER_OF_QUOTES]
+        # number_of_samples = len(response)
+        # random_samples = random.sample(set(response), number_of_samples)
 
-        quotes = []
+        paginated_todo = response.paginate(page=page, per_page=NUMBER_OF_QUOTES)
         current_app.logger.info("Final quotes:")
-        for sample in random_samples:
-            current_app.logger.info("quote: %s",sample.caption)
-            current_app.logger.info("topic: %s",sample.general_mood)
-            current_app.logger.info("moods: %s",sample.moods)
-            current_app.logger.info("objects: %s",sample.objects_)
-            current_app.logger.info("likes: %s",sample.likes)
+        for quote in paginated_todo.items:
+            current_app.logger.info("quote: %s",quote.caption)
+            current_app.logger.info("topic: %s",quote.general_mood)
+            current_app.logger.info("moods: %s",quote.moods)
+            current_app.logger.info("objects: %s",quote.objects_)
+            current_app.logger.info("likes: %s",quote.likes)
             current_app.logger.info("="*50)
-            quotes.append(sample)
-        if not quotes:
+        if not response:
             raise ValueError("Quotes not found.")
 
-        return {"quotes": quotes}
+        return paginated_todo
 
-    @init_db
     def get_quotes(
-        self, general_mood: str = None, moods: list = None, objects: list = None, order_by_likes: bool = False
+        self, general_mood: str = None, moods: list = None, objects: list = None, order_by_likes: bool = False, page=1
     ) -> list:
         """Get captions from mongo based on given parameters."""
         kwargs = {}
@@ -123,22 +111,19 @@ class MongoManager:
             resp = Captions.objects(**kwargs)
 
         try:
-            return self.get_quotes_from_response(resp)
+            return self.get_quotes_from_response(resp,page)
         except ValueError:
             return self.get_quotes(general_mood=random.choice(DEFAULT_TOPICS))
 
-    @init_db
     def get_quotes_based_on_author(self, author: str = None) -> list:
         """Get captions from mongo based on author name."""
         resp = Captions.objects(author=author)
-        return self.get_quotes_from_response(resp)
+        return self.get_quotes_from_response(resp, page)
 
-    @init_db
     def get_users(self, email: str) -> list:
         """Get Users details matching email address."""
         return Users.objects(email=email)
 
-    @init_db
     def like_quote(self, id: str) -> int:
         """Increment the like by 1."""
         Captions.objects(id=id).update_one(inc__likes=1)
