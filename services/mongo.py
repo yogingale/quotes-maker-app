@@ -69,9 +69,9 @@ class MongoManager:
         # number_of_samples = len(response)
         # random_samples = random.sample(set(response), number_of_samples)
 
-        paginated_todo = response.paginate(page=page, per_page=NUMBER_OF_QUOTES)
+        paginated_quotes = response.paginate(page=page, per_page=NUMBER_OF_QUOTES)
         current_app.logger.info("Final quotes:")
-        for quote in paginated_todo.items:
+        for quote in paginated_quotes.items:
             current_app.logger.info("quote: %s",quote.caption)
             current_app.logger.info("topic: %s",quote.general_mood)
             current_app.logger.info("moods: %s",quote.moods)
@@ -81,7 +81,7 @@ class MongoManager:
         if not response:
             raise ValueError("Quotes not found.")
 
-        return paginated_todo
+        return paginated_quotes
 
     def get_quotes(
         self, general_mood: str = None, moods: list = None, objects: list = None, order_by_likes: bool = False, page=1
