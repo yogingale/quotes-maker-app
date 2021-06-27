@@ -7,6 +7,6 @@ flask-mongoengine==1.0.0
 itsdangerous==1.1.0
 Jinja2==2.11.3
 MarkupSafe==1.1.1
-mongoengine==3.11.3
+mongoengine==0.20.0
 python-dotenv==0.17.0
 Werkzeug==1.0.1
