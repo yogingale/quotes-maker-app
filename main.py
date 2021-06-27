@@ -247,7 +247,9 @@ def like():
 @app.route("/", methods=["GET"])
 @app.route("/index", methods=["GET"])
 def index():
-    return render_template("index.html")
+    # return render_template("index.html")
+    return redirect(url_for('topic', topic="funny" ))
+
 
 
 @app.route("/<page>/test", methods=["GET"])
