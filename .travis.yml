@@ -1,12 +1,5 @@
 language: python
-python:
-- '3.8.1'
-install:
-# - pip install -r requirements-dev.txt
-script:
-# - black . --check --diff
-#TODO: restructure templates inorder to use isort efficiently
-# - isort --check-only --diff .
+
 deploy:
   - provider: heroku
     api_key:
