@@ -40,6 +40,11 @@ class Captions(Document):
     likes = IntField()
 
 
+class MoodMeta(Document):
+    count = IntField()
+    mood = StringField(required=True, max_length=50)
+    mood_type = StringField(required=True, max_length=50)
+
 class Users(Document):
     username = StringField(required=True, max_length=250)
     password = StringField(required=True, max_length=50)
@@ -64,7 +69,7 @@ class MongoManager:
 
     def get_quotes_from_response(self, response: Document, page: int) -> list:
         """Get random samples from mongoengine response, returns quotes and keywords."""
-        current_app.logger.info("Total %s results received, slicing the first %s results.",len(response), NUMBER_OF_QUOTES)
+        current_app.logger.info("Total %s results received, slicing %s results.",len(response), NUMBER_OF_QUOTES)
         # response = response[:NUMBER_OF_QUOTES]
         # number_of_samples = len(response)
         # random_samples = random.sample(set(response), number_of_samples)
@@ -130,3 +135,9 @@ class MongoManager:
         likes_count = Captions.objects(id=id)[0].likes
 
         return likes_count
+
+    def update_mood_count(self, mood: str, mood_type: str) -> bool:
+        """Update topic count based on page hit."""
+        is_updated = MoodMeta.objects(mood=mood,mood_type=mood_type).update_one(inc__count=1)
+        if not is_updated:
+            MoodMeta(mood=mood,mood_type="topic", count=1).save()

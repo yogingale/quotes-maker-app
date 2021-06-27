@@ -219,6 +219,7 @@ def topic(topic: str, page: int =1):
     if topic not in DEFAULT_TOPICS:
         return abort(404)
     if request.method == "GET":
+        mongo.update_mood_count(mood=topic, mood_type="topic")
         quotes = mongo.get_quotes(general_mood=topic, order_by_likes=True, page=page)
         return render_template("index.html", quotes=quotes, url_for_="topic",end_point=topic)
 
@@ -228,6 +229,7 @@ def search(mood: str, page: int =1):
     mongo = MongoManager.quotes_maker()
 
     if request.method == "GET":
+        mongo.update_mood_count(mood=mood, mood_type="mood")
         quotes = mongo.get_quotes(moods=[mood], order_by_likes=True, page=page)
         return render_template("index.html", quotes=quotes, url_for_="search",end_point=mood)
 
@@ -257,3 +259,5 @@ def test(page):
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
