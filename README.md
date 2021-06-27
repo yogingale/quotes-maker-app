@@ -19,21 +19,28 @@ Domain registration - GoDaddy
 CDN - Cloudflare  
 
 
-### Setup and Install
+### Setup locally
 
-  1) git clone
+#### Prerequisite
+
+Set env var `APP_STAGE` as local, dev or prod based on environment.
+
+#### Steps
+  1) git clone the repository
   2) python3 -m venv .venv
   3) source .venv/bin/activate
   4) pip install -r requirements.txt
 
 ### Run
 
-To start the server.
-python main.py
+To start the server run  
+`python main.py`
 
-### Themes
-
-This project has CreativeTim (www.creative-tim.com) Get-Shit-Done themes used.
+### File structure
+* main.py - Main file to start flask server
+* services - Helper classes
+* static - Static files (CSS, JS, etc)
+* templates - HTML Jinja template
 
 ### Google signup token
 Google signup tokens: https://console.developers.google.com/apis/credentials?pli=1

@@ -51,8 +51,7 @@ class FlaskCSRFClient(BaseFlaskClient):
         environ_overrides = {}
         self.cookie_jar.inject_wsgi(environ_overrides)
         with flask.current_app.test_request_context(
-            "/login",
-            environ_overrides=environ_overrides,
+            "/login", environ_overrides=environ_overrides,
         ):
             # Now, we call Flask-WTF's method of generating a CSRF token...
             csrf_token = generate_csrf()
