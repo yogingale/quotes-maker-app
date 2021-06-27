@@ -4,7 +4,7 @@ python:
 install:
 - pip install -r requirements-dev.txt
 script:
-- black . --check --diff
+# - black . --check --diff
 #TODO: restructure templates inorder to use isort efficiently
 # - isort --check-only --diff .
 deploy:
